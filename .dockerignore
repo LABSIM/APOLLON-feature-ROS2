@@ -1,0 +1,21 @@
+# ignore all git related features
+.git
+.gitignore
+.cache
+
+# ignore explorer related  
+.DS_Store 
+.thumbsdb
+
+# ignore all markdown files (md) beside all README*.md other than README-secret.md
+*.md
+!README*.md
+README-secret.md
+
+# other
+test
+docs
+Dockerfile
+coverage
+LICENSE
+.eslintrc
