@@ -4,7 +4,7 @@ FROM ros:foxy-ros-base
 RUN mkdir -p /home/dev_ws/src
 
 # Copy ROS2 packages into workspace
-COPY ./docker/ISIR/embebed_packages/ /home/dev_ws/src
+COPY ./docker/ISIR/embeded_packages /home/dev_ws/src
 
 # Check out ROS-TCP-Endpoint, ROS2 version
 RUN git clone https://github.com/Unity-Technologies/ROS-TCP-Endpoint /home/dev_ws/src/ros_tcp_endpoint -b ROS2v0.6.0
