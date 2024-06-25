@@ -1,4 +1,4 @@
-FROM ros:foxy-ros-base
+FROM ros:humble-ros-base
 
 # Make ROS2 Workspace Dirss
 RUN mkdir -p /home/dev_ws/src
@@ -16,7 +16,7 @@ COPY ./docker/ISIR/source_ros.sh /home/dev_ws/source_ros.sh
 RUN echo "cd home/dev_ws" >> ~/.bashrc
 
 # Build the workspace
-RUN cd home/dev_ws && . /opt/ros/foxy/setup.sh && colcon build
+RUN cd home/dev_ws && . /opt/ros/humble/setup.sh && colcon build
 
 # Source the workspace on sign in
 RUN echo ". install/local_setup.bash" >> ~/.bashrc
