@@ -45,9 +45,6 @@ add_executable(
 target_include_directories(
     lexikhum_oat_downstream_gateway
     PUBLIC
-        ${rclcpp_INCLUDE_DIRS}
-        ${std_msgs_INCLUDE_DIRS}
-        ${lexikhum_oat_gateway_msgs_INCLUDE_DIRS}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
@@ -66,9 +63,6 @@ add_executable(
 target_include_directories(
     lexikhum_oat_downstream_gateway
     PUBLIC
-        ${rclcpp_INCLUDE_DIRS}
-        ${std_msgs_INCLUDE_DIRS}
-        ${lexikhum_oat_gateway_msgs_INCLUDE_DIRS}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
