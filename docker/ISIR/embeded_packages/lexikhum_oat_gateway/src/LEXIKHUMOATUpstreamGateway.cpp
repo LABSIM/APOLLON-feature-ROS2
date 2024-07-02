@@ -1,11 +1,12 @@
 // std include
-#include <ctsdlib>
+#include <cstdlib>
+#include <functional>
 #include <chrono>
 #include <memory>
 
 // ROS2 include
 #include "rclcpp/rclcpp.hpp"
-#include "lexikhum_oat_gateway_msgs/msg/LEXIKHUMOATUpstream.hpp"
+#include "lexikhum_oat_gateway_msgs/msg/upstream.hpp"
 
 //
 // TODO :
@@ -13,7 +14,7 @@
 //
 
 // avoid namespace pollution
-namespace Labsim::gateway::ROS2 
+namespace Labsim::apollon::feature::ROS2 
 {
 
     using namespace std::chrono_literals;
@@ -29,7 +30,7 @@ namespace Labsim::gateway::ROS2
         {
 
             this->m_publisher 
-                = this->create_publisher<lexikhum_oat_gateway_msgs::msg::LEXIKHUMOATUpstream>("ISIR_to_ONERA_Upstream", 10);
+                = this->create_publisher<lexikhum_oat_gateway_msgs::msg::Upstream>("ISIR_to_ONERA_Upstream", 10);
 
             //
             // TODO :
@@ -51,15 +52,15 @@ namespace Labsim::gateway::ROS2
         void tick()
         {
 
-            auto message = lexikhum_oat_gateway_msgs::msg::LEXIKHUMOATUpstream();
-            message.uuid = this->m_uuid++;
+            auto msg = lexikhum_oat_gateway_msgs::msg::Upstream();
+            msg.uuid = this->m_uuid++;
             RCLCPP_INFO_STREAM(
                 this->get_logger(), 
                 "Publishing: '" 
-                    << message.uuid 
+                    << msg.uuid 
                     << "'"
             );
-            this->m_publisher->publish(message);
+            this->m_publisher->publish(msg);
 
         } /* tick() */
 
@@ -70,7 +71,7 @@ namespace Labsim::gateway::ROS2
 
     private:
         rclcpp::TimerBase::SharedPtr m_timer;
-        rclcpp::Publisher<lexikhum_oat_gateway_msgs::msg::LEXIKHUMOATUpstream>::SharedPtr m_publisher;
+        rclcpp::Publisher<lexikhum_oat_gateway_msgs::msg::Upstream>::SharedPtr m_publisher;
         //
         // TODO :
         // ADD ISIR TOPIC SUBSCRIBER HERE (?)
@@ -79,17 +80,17 @@ namespace Labsim::gateway::ROS2
     
     }; /* class LEXIKHUMOATUpstreamGateway */
 
-} /* } Labsim::gateway::ROS2 */
+} /* } Labsim::apollon::feature::ROS2 */
 
 int main(int argc, char * argv[])
 {
 
     // standard ROS2 Node  
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<Labsim::gateway::ROS2::LEXIKHUMOATUpstreamGateway>());
-    rclcpp::shutDown();
+    rclcpp::spin(std::make_shared<Labsim::apollon::feature::ROS2::LEXIKHUMOATUpstreamGateway>());
+    rclcpp::shutdown();
 
-    // sucess 
-    return std::exit(EXIT_SUCCESS);
+    // success 
+    std::exit(EXIT_SUCCESS);
 
 } /* main() */

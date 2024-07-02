@@ -1,11 +1,12 @@
 // std include
-#include <ctsdlib>
+#include <cstdlib>
 #include <functional>
+#include <chrono>
 #include <memory>
 
 // ROS2 include
 #include "rclcpp/rclcpp.hpp"
-#include "lexikhum_oat_gateway_msgs/msg/LEXIKHUMOATDownstream.hpp"
+#include "lexikhum_oat_gateway_msgs/msg/downstream.hpp"
 
 //
 // TODO :
@@ -13,9 +14,10 @@
 //
 
 // avoid namespace pollution
-namespace Labsim::gateway::ROS2 
+namespace Labsim::apollon::feature::ROS2
 {
 
+    using namespace std::chrono_literals;
     // using std::placeholders::_1;
 
     class LEXIKHUMOATDownstreamGateway 
@@ -34,7 +36,7 @@ namespace Labsim::gateway::ROS2
             //
 
             this->m_subscriber 
-                = this->create_subscription<lexikhum_oat_gateway_msgs::msg::LEXIKHUMOATDownstream>(
+                = this->create_subscription<lexikhum_oat_gateway_msgs::msg::Downstream>(
                     "ONERA_to_ISIR_Downstream", 
                     10, 
                     std::bind(
@@ -49,7 +51,7 @@ namespace Labsim::gateway::ROS2
                 = this->create_wall_timer(
                     500ms, 
                     std::bind(
-                        &LEXIKHUMOATUpstreamGateway::tick, 
+                        &LEXIKHUMOATDownstreamGateway::tick, 
                         this
                     )
                 );
@@ -66,13 +68,13 @@ namespace Labsim::gateway::ROS2
 
         } /* tick() */
 
-        void ONERA_to_ISIR_Downstream_callback(lexikhum_oat_gateway_msgs::msg::LEXIKHUMOATDownstream const & _msg) const
+        void ONERA_to_ISIR_Downstream_callback(lexikhum_oat_gateway_msgs::msg::Downstream const & _msg) const
         {
 
             RCLCPP_INFO_STREAM(
                 this->get_logger(), 
                 "I heard: '" 
-                    << msg.uuid 
+                    << _msg.uuid 
                     << "'"
             );
 
@@ -84,22 +86,22 @@ namespace Labsim::gateway::ROS2
         // TODO :
         // ADD ISIR TOPIC PUBLISHER HERE (?)
         //
-        rclcpp::Subscription<lexikhum_oat_gateway_msgs::msg::LEXIKHUMOATDownstream>::SharedPtr m_subscriber;
+        rclcpp::Subscription<lexikhum_oat_gateway_msgs::msg::Downstream>::SharedPtr m_subscriber;
         size_t m_uuid;
 
     }; /* class LEXIKHUMOATDownstreamGateway */
 
-} /* } Labsim::gateway::ROS2 */
+} /* } Labsim::apollon::feature::ROS2 */
 
 int main(int argc, char * argv[])
 {
 
     // standard ROS2 Node  
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<Labsim::gateway::ROS2::LEXIKHUMOATDownstreamGateway>());
-    rclcpp::shutDown();
+    rclcpp::spin(std::make_shared<Labsim::apollon::feature::ROS2::LEXIKHUMOATDownstreamGateway>());
+    rclcpp::shutdown();
 
     // sucess 
-    return std::exit(EXIT_SUCCESS);
+    std::exit(EXIT_SUCCESS);
 
 } /* main() */

@@ -1,34 +1,82 @@
 cmake_minimum_required(VERSION 3.8)
 project(lexikhum_oat_gateway)
 
+#
+# Default build :
+# - Release build type
+# - strict C99
+# - strict C++20
+#
+set(CMAKE_BUILD_TYPE "Release")
+
+if(NOT CMAKE_C_STANDARD)
+
+  set(CMAKE_C_STANDARD 99)
+  set(CMAKE_C_STANDARD_REQUIRED ON)
+  set(CMAKE_C_EXTENSIONS OFF)
+
+endif()
+
+if(NOT CMAKE_CXX_STANDARD)
+
+  set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+
   add_compile_options(-Wall -Wextra -Wpedantic)
+
 endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(lexikhum_oat_gateway_msgs REQUIRED)
 
-# targets 
+# target => lexikhum_oat_downstream_gateway
 add_executable(
     lexikhum_oat_downstream_gateway 
     src/LEXIKHUMOATDownstreamGateway.cpp
 )
+target_include_directories(
+    lexikhum_oat_downstream_gateway
+    PUBLIC
+        ${rclcpp_INCLUDE_DIRS}
+        ${std_msgs_INCLUDE_DIRS}
+        ${lexikhum_oat_gateway_msgs_INCLUDE_DIRS}
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
 ament_target_dependencies(
     lexikhum_oat_downstream_gateway 
-    rclcpp 
+    rclcpp
     lexikhum_oat_gateway_msgs
+    std_msgs
 )
  
+# target => lexikhum_oat_upstream_gateway
 add_executable(
     lexikhum_oat_upstream_gateway 
     src/LEXIKHUMOATUpstreamGateway.cpp
 )
+target_include_directories(
+    lexikhum_oat_downstream_gateway
+    PUBLIC
+        ${rclcpp_INCLUDE_DIRS}
+        ${std_msgs_INCLUDE_DIRS}
+        ${lexikhum_oat_gateway_msgs_INCLUDE_DIRS}
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
 ament_target_dependencies(
     lexikhum_oat_upstream_gateway 
-    rclcpp 
+    rclcpp
     lexikhum_oat_gateway_msgs
+    std_msgs
 )
 
 # install
@@ -39,6 +87,18 @@ install(
     DESTINATION 
         lib/${PROJECT_NAME}
 )
+# install(
+#     DIRECTORY
+#         launch
+#     DESTINATION 
+#         share/${PROJECT_NAME}
+# )
+# install(
+#     DIRECTORY
+#         config
+#     DESTINATION 
+#         share/${PROJECT_NAME}
+# )
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
