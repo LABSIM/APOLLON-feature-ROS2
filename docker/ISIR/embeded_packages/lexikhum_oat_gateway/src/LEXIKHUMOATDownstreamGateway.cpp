@@ -1,6 +1,5 @@
 // std include
 #include <cstdlib>
-#include <functional>
 #include <chrono>
 #include <memory>
 #include <string_view>
@@ -29,7 +28,6 @@ namespace Labsim::apollon::feature::ROS2
 
     using namespace std::literals;
     using namespace std::chrono_literals;
-    // using std::placeholders::_1;
 
     class LEXIKHUMOATDownstreamGateway 
         : public rclcpp::Node
@@ -53,7 +51,7 @@ namespace Labsim::apollon::feature::ROS2
             // CREATE ISIR TOPIC PUBLISHER HERE (?)
             //
 
-            auto subscription_callback 
+            auto subscription_lambda 
                 = [this](lexikhum_oat_gateway_msgs::msg::Downstream const & _msg) 
                     -> void
                 {
@@ -67,13 +65,13 @@ namespace Labsim::apollon::feature::ROS2
 
                     this->m_buffer_ref = _msg;
 
-                }; /* subscription_callback lambda */
+                }; /* subscription_lambda */
 
             this->m_subscriber 
                 = this->create_subscription<lexikhum_oat_gateway_msgs::msg::Downstream>(
                     /* topic_name        */ self_type::_s_topic_name.data(), 
                     /* qos_history_depth */ 10, 
-                    /* callback lambda   */ std::move(subscription_callback)  
+                    /* callback          */ std::move(subscription_lambda)  
                 );
         
             this->m_timer 
