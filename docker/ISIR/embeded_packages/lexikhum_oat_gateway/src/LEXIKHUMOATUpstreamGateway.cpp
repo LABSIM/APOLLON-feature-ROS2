@@ -2,7 +2,9 @@
 #include <cstdlib>
 #include <functional>
 #include <chrono>
+#include <string_view>
 #include <memory>
+#include <atomic>
 
 // ROS2 include
 #include "rclcpp/rclcpp.hpp"
@@ -13,10 +15,19 @@
 // ADD ISIR MESSAGE INCLUDE DIRECTIVE HERE (?)
 //
 
+#include "std_msgs/msg/bool.hpp"
+#include "std_msgs/msg/float64_multi_array.hpp"
+#include "sensor_msgs/msg/joint_state.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "geometry_msgs/msg/point.hpp"
+#include "geometry_msgs/msg/wrench.hpp"
+#include "geometry_msgs/msg/twist.hpp"
+
 // avoid namespace pollution
 namespace Labsim::apollon::feature::ROS2 
 {
 
+    using namespace std::literals;
     using namespace std::chrono_literals;
 
     class LEXIKHUMOATUpstreamGateway
@@ -24,13 +35,19 @@ namespace Labsim::apollon::feature::ROS2
     {
 
     public:
+        static constexpr std::string_view _s_node_name  = "lexikhum_oat_gateway"sv;
+        static constexpr std::string_view _s_topic_name = "ONERA_to_ISIR_Downstream"sv;
+
+    public:
         LEXIKHUMOATUpstreamGateway()
-            : Node("lexikhum_oat_gateway")
-            , m_uuid(0)
+            : Node(LEXIKHUMOATUpstreamGateway::_s_node_name.data())
         {
 
             this->m_publisher 
-                = this->create_publisher<lexikhum_oat_gateway_msgs::msg::Upstream>("ISIR_to_ONERA_Upstream", 10);
+                = this->create_publisher<lexikhum_oat_gateway_msgs::msg::Upstream>(
+                    /* topic_name        */ LEXIKHUMOATUpstreamGateway::_s_topic_name.data(), 
+                    /* qos_history_depth */ 10
+                );
 
             //
             // TODO :
@@ -52,15 +69,18 @@ namespace Labsim::apollon::feature::ROS2
         void tick()
         {
 
-            auto msg = lexikhum_oat_gateway_msgs::msg::Upstream();
-            msg.uuid = this->m_uuid++;
+            auto current_build = lexikhum_oat_gateway_msgs::msg::Upstream();
+            current_build.uuid = this->m_buffer_uuid++;
+
             RCLCPP_INFO_STREAM(
                 this->get_logger(), 
                 "Publishing: '" 
-                    << msg.uuid 
+                    << current_build.uuid 
                     << "'"
             );
-            this->m_publisher->publish(msg);
+            
+            this->m_buffer_ref = current_build;
+            this->m_publisher->publish(this->m_buffer_ref.load());
 
         } /* tick() */
 
@@ -70,13 +90,27 @@ namespace Labsim::apollon::feature::ROS2
         //
 
     private:
-        rclcpp::TimerBase::SharedPtr m_timer;
-        rclcpp::Publisher<lexikhum_oat_gateway_msgs::msg::Upstream>::SharedPtr m_publisher;
+
+        rclcpp::TimerBase::SharedPtr 
+            m_timer{ };
+
         //
         // TODO :
         // ADD ISIR TOPIC SUBSCRIBER HERE (?)
         //
-        size_t m_uuid;
+
+        rclcpp::Publisher<lexikhum_oat_gateway_msgs::msg::Upstream>::SharedPtr 
+            m_publisher{ };
+
+        alignas(std::atomic_ref< lexikhum_oat_gateway_msgs::msg::Upstream >::required_alignment) 
+        lexikhum_oat_gateway_msgs::msg::Upstream 
+            m_buffer{ };
+
+        std::atomic_ref< lexikhum_oat_gateway_msgs::msg::Upstream >
+            m_buffer_ref{ this->m_buffer };
+
+        size_t 
+            m_buffer_uuid{ 0 };
     
     }; /* class LEXIKHUMOATUpstreamGateway */
 
