@@ -37,7 +37,7 @@ namespace Labsim::apollon::feature::ROS2
     using namespace std::chrono_literals;
 
     class UpstreamGateway
-        : public NonCopyable
+        : private NonCopyable
         , public rclcpp::Node
     {
         
