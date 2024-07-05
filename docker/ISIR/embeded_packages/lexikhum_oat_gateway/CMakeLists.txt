@@ -39,7 +39,7 @@ find_package(lexikhum_oat_gateway_msgs REQUIRED)
 # target => lexikhum_oat_downstream_gateway
 add_executable(
     lexikhum_oat_downstream_gateway 
-    src/LEXIKHUMOATDownstreamGateway.cpp
+    src/LEXIKHUMOAT_DownstreamGateway.cpp
 )
 target_include_directories(
     lexikhum_oat_downstream_gateway
@@ -62,7 +62,7 @@ ament_target_dependencies(
 # target => lexikhum_oat_upstream_gateway
 add_executable(
     lexikhum_oat_upstream_gateway 
-    src/LEXIKHUMOATUpstreamGateway.cpp
+    src/LEXIKHUMOAT_UpstreamGateway.cpp
 )
 target_include_directories(
     lexikhum_oat_upstream_gateway
@@ -90,12 +90,12 @@ install(
     DESTINATION 
         lib/${PROJECT_NAME}
 )
-# install(
-#     DIRECTORY
-#         launch
-#     DESTINATION 
-#         share/${PROJECT_NAME}
-# )
+install(
+    DIRECTORY
+        launch
+    DESTINATION 
+        share/${PROJECT_NAME}
+)
 # install(
 #     DIRECTORY
 #         config
