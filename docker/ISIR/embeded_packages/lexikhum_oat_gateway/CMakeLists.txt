@@ -7,6 +7,7 @@ project(lexikhum_oat_gateway)
 # - strict C99
 # - strict C++20
 #
+
 set(CMAKE_BUILD_TYPE "Release")
 
 if(NOT CMAKE_C_STANDARD)
@@ -44,7 +45,7 @@ add_executable(
 )
 target_include_directories(
     lexikhum_oat_downstream_gateway
-    PUBLIC
+    PRIVATE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
@@ -54,7 +55,7 @@ target_link_libraries(
         atomic
 )
 ament_target_dependencies(
-    lexikhum_oat_downstream_gateway 
+    lexikhum_oat_downstream_gateway
     PUBLIC
         rclcpp
         lexikhum_oat_gateway_msgs
@@ -68,7 +69,7 @@ add_executable(
 )
 target_include_directories(
     lexikhum_oat_upstream_gateway
-    PUBLIC
+    PRIVATE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
@@ -123,10 +124,8 @@ if(BUILD_TESTING)
 endif()
 
 ament_export_dependencies(
-    rosidl_default_runtime 
-    std_msgs 
-    geometry_msgs
-    sensor_msgs
+    rclcpp
+    lexikhum_oat_gateway_msgs
 )
 
 ament_export_include_directories(

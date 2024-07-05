@@ -7,6 +7,7 @@ project(lexikhum_oat_gateway_msgs)
 # - strict C99
 # - strict C++20
 #
+
 set(CMAKE_BUILD_TYPE "Release")
 
 if(NOT CMAKE_C_STANDARD)
@@ -68,6 +69,11 @@ ament_export_dependencies(
     std_msgs 
     geometry_msgs
     sensor_msgs
+)
+
+ament_export_include_directories(
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
 
 ament_package()

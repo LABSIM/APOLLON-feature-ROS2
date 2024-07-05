@@ -38,9 +38,13 @@ namespace Labsim::apollon::feature::ROS2
         //         -> void
         //     {
         //
-        //         this->m_upstream_buffer_ref.? = _msg.?;
+        //         auto buffer = this->m_upstream_buffer_ref.load();
+        //
+        //         buffer.? = _msg.?;
         //         [...]
-        //         this->m_upstream_buffer_ref.? = _msg.?;
+        //         buffer.? = _msg.?;
+        //
+        //         this->m_upstream_buffer_ref = buffer;
         //
         //     }; /* ISIR_subscription_lambda */
         //
