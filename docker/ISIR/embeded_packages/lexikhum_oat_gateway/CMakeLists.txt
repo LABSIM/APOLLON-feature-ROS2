@@ -39,7 +39,8 @@ find_package(lexikhum_oat_gateway_msgs REQUIRED)
 # target => lexikhum_oat_downstream_gateway
 add_executable(
     lexikhum_oat_downstream_gateway 
-    src/LEXIKHUMOAT_DownstreamGateway.cpp
+    src/lib/LEXIKHUMOAT_DownstreamGateway.cpp
+    src/app/downstream/main.cpp
 )
 target_include_directories(
     lexikhum_oat_downstream_gateway
@@ -62,7 +63,8 @@ ament_target_dependencies(
 # target => lexikhum_oat_upstream_gateway
 add_executable(
     lexikhum_oat_upstream_gateway 
-    src/LEXIKHUMOAT_UpstreamGateway.cpp
+    src/lib/LEXIKHUMOAT_UpstreamGateway.cpp
+    src/app/upstream/main.cpp
 )
 target_include_directories(
     lexikhum_oat_upstream_gateway
@@ -104,15 +106,32 @@ install(
 # )
 
 if(BUILD_TESTING)
+    
     find_package(ament_lint_auto REQUIRED)
+    
     # the following line skips the linter which checks for copyrights
     # comment the line when a copyright and license is added to all source files
     set(ament_cmake_copyright_FOUND TRUE)
+
     # the following line skips cpplint (only works in a git repo)
     # comment the line when this package is in a git repo and when
     # a copyright and license is added to all source files
     set(ament_cmake_cpplint_FOUND TRUE)
+
     ament_lint_auto_find_test_dependencies()
+
 endif()
+
+ament_export_dependencies(
+    rosidl_default_runtime 
+    std_msgs 
+    geometry_msgs
+    sensor_msgs
+)
+
+ament_export_include_directories(
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 
 ament_package()
