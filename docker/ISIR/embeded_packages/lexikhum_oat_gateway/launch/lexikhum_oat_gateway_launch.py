@@ -18,7 +18,7 @@ def generate_launch_description():
             executable='default_server_endpoint',
             name='endpoint',
             arguments=[
-                '-p','ROS_IP:=0.0.0.0',
+                '-p','ROS_IP:=127.0.0.1',
                 '-p','ROS_TCP_PORT:=10000'
             ]
         )
