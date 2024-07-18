@@ -90,12 +90,42 @@ namespace Labsim::apollon::feature::ROS2
                 // eject into Unity
                 this->m_publisher->publish(buffer);
 
-                // RCLCPP_INFO_STREAM(
-                //     this->get_logger(), 
-                //     "I Send: '" 
-                //         << buffer.uuid 
-                //         << "'"
-                // );
+                RCLCPP_INFO_STREAM(
+                    this->get_logger(), 
+                    "I Send: '" 
+                        << buffer.uuid 
+                        << " / "
+                            << buffer.haptic_arm_world_position.x
+                            << ","
+                            << buffer.haptic_arm_world_position.y
+                            << ","
+                            << buffer.haptic_arm_world_position.z
+                        << " / "
+                            << buffer.gate_world_position.x
+                            << ","
+                            << buffer.gate_world_position.y
+                            << ","
+                            << buffer.gate_world_position.z
+                        << " / "
+                            << buffer.gate_size_forward.x
+                            << ","
+                            << buffer.gate_size_forward.y
+                            << ","
+                            << buffer.gate_size_forward.z
+                        << " / "
+                            << buffer.gate_size_dodge.x
+                            << ","
+                            << buffer.gate_size_dodge.y
+                            << ","
+                            << buffer.gate_size_dodge.z
+                        << " / "
+                            << buffer.gate_gradiant_force.x
+                            << ","
+                            << buffer.gate_gradiant_force.y
+                            << ","
+                            << buffer.gate_gradiant_force.z
+                    << "'"
+                );
 
             }; /* tick_lambda */
 

@@ -40,12 +40,18 @@ namespace Labsim::apollon::feature::ROS2
                 // keep track of current uuid 
                 this->m_uuid = _msg.uuid;
 
-                // RCLCPP_INFO_STREAM(
-                //     this->get_logger(), 
-                //     "I Receive: '" 
-                //         << _msg.uuid 
-                //         << "'"
-                // );
+                RCLCPP_INFO_STREAM(
+                    this->get_logger(), 
+                    "I Receive: '" 
+                        << _msg.uuid 
+                        << " / "
+                            << _msg.entity_world_pose.position.x
+                            << ","
+                            << _msg.entity_world_pose.position.y
+                            << ","
+                            << _msg.entity_world_pose.position.z
+                    << "'"
+                );
 
             }; /* subscription_lambda */
 
