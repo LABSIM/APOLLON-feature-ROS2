@@ -52,11 +52,10 @@
 // #include "std_msgs/msg/bool.hpp"
 // #include "std_msgs/msg/float64_multi_array.hpp"
 // #include "sensor_msgs/msg/joint_state.hpp"
-#include "geometry_msgs/msg/vector3.hpp"
+// #include "geometry_msgs/msg/vector3.hpp"
 #include "geometry_msgs/msg/pose.hpp"
-// #include "geometry_msgs/msg/pose_stamped.hpp"
-// #include "geometry_msgs/msg/pose_stamped.hpp"
-// #include "geometry_msgs/msg/point.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "geometry_msgs/msg/point.hpp"
 // #include "geometry_msgs/msg/wrench.hpp"
 // #include "geometry_msgs/msg/twist.hpp"
 //
@@ -86,8 +85,9 @@ namespace Labsim::apollon::feature::ROS2
         //
         //  using ISIR_topic_type = msg::ISIRTopicT;
         //
+        using ISIR_sim_target_topic_type = geometry_msgs::msg::PoseStamped;
 
-        using gateway_topic_type = lexikhum_oat_gateway_msgs::msg::Downstream; 
+        using gateway_topic_type         = lexikhum_oat_gateway_msgs::msg::Downstream; 
 
         // constants 
 
@@ -97,11 +97,12 @@ namespace Labsim::apollon::feature::ROS2
         //
         // static constexpr auto _s_ISIR_topic_name  = "??"sv;
         //
+        static constexpr auto _s_ISIR_sim_target_topic_name = "/sim/target_position"sv;
         
-        static constexpr auto _s_gateway_topic_name  = "ONERA_to_ISIR_Downstream"sv;
-        static constexpr auto _s_gateway_node_name   = "lexikhum_oat_downstream_gateway"sv;
+        static constexpr auto _s_gateway_topic_name         = "/gateway/ONERA_to_ISIR_Downstream"sv;
+        static constexpr auto _s_gateway_node_name          = "lexikhum_oat_downstream_gateway"sv;
 
-        static constexpr auto _s_gateway_tick_period = 100ms;
+        static constexpr auto _s_gateway_tick_period        = 100ms;
 
         // Default explicit Ctor
         
@@ -121,6 +122,8 @@ namespace Labsim::apollon::feature::ROS2
         // rclcpp::Publisher<ISIR_topic_type>::SharedPtr 
         //     m_topic_publisher{ };
         //
+        rclcpp::Publisher<ISIR_sim_target_topic_type>::SharedPtr 
+            m_ISIR_sim_target_topic_publisher{ };
 
         rclcpp::Subscription<gateway_topic_type>::SharedPtr 
             m_subscriber{ };

@@ -27,5 +27,5 @@ docker run -it --rm -p 10000:10000 apollon-isir-humble:0.0.1 /bin/bash
 ## Launch ROS2 endpoint in the container 
 
 ```bash
-ros2 launch lexikhum_oat_gateway lexikhum_oat_gateway_launch.py
+ros2 launch lexikhum_oat_gateway lexikhum_oat_gateway_container_launch.py
 ```

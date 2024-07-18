@@ -63,8 +63,11 @@ namespace Labsim::apollon::feature::ROS2
                 //
                 // auto topic = ISIR_topic_type();
                 // topic.? = buffer.?;
-                // this->m_topic_publisher.publish(topic);
+                // this->m_topic_publisher->publish(topic);
                 //
+                auto topic = ISIR_sim_target_topic_type();
+                topic.pose.position = buffer.entity_world_pose.position;
+                this->m_ISIR_sim_target_topic_publisher->publish(topic);
 
             }; /* tick_lambda */
 
@@ -72,12 +75,17 @@ namespace Labsim::apollon::feature::ROS2
         // TODO :
         // CREATE ISIR TOPIC PUBLISHER HERE (?)
         //
-        // this->m_topic_publisher 
+        // this->m_topic_publisher   
         //     = this->create_publisher<ISIR_topic_type>(
-        //         /* topic_name        */ LEXIKHUMOATUpstreamGateway::_s_ISIR_topic_name.data(), 
+        //         /* topic_name        */ self_type::_s_ISIR_topic_name.data(), 
         //         /* qos_history_depth */ 10
         //     );
         //
+        this->m_ISIR_sim_target_topic_publisher 
+            = this->create_publisher<ISIR_sim_target_topic_type>(
+                /* topic_name        */ self_type::_s_ISIR_sim_target_topic_name.data(), 
+                /* qos_history_depth */ 10
+            );
 
         this->m_subscriber 
             = this->create_subscription<gateway_topic_type>(

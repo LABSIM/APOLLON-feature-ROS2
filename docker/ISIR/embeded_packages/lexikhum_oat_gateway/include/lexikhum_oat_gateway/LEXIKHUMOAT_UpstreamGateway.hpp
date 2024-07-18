@@ -50,11 +50,12 @@
 //     & package.xml via lexikhum_oat_gateway_msgs project
 //
 // #include "std_msgs/msg/bool.hpp"
-// #include "std_msgs/msg/float64_multi_array.hpp"
+#include "std_msgs/msg/float64_multi_array.hpp"
 // #include "sensor_msgs/msg/joint_state.hpp"
-#include "geometry_msgs/msg/vector3.hpp"
-// #include "geometry_msgs/msg/pose_stamped.hpp"
-// #include "geometry_msgs/msg/point.hpp"
+// #include "geometry_msgs/msg/vector3.hpp"
+// #include "geometry_msgs/msg/pose.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "geometry_msgs/msg/point.hpp"
 // #include "geometry_msgs/msg/wrench.hpp"
 // #include "geometry_msgs/msg/twist.hpp"
 //
@@ -84,8 +85,10 @@ namespace Labsim::apollon::feature::ROS2
         //
         //  using ISIR_topic_type = msg::ISIRTopicT;
         //
+        using ISIR_fd_ee_pose_topic_type  = geometry_msgs::msg::PoseStamped;
+        using ISIR_ctrl_params_topic_type = std_msgs::msg::Float64MultiArray;
 
-        using gateway_topic_type = lexikhum_oat_gateway_msgs::msg::Upstream;      
+        using gateway_topic_type          = lexikhum_oat_gateway_msgs::msg::Upstream;      
         
         // constants 
 
@@ -95,11 +98,13 @@ namespace Labsim::apollon::feature::ROS2
         //
         // static constexpr auto _s_ISIR_topic_name  = "??"sv;
         //
+        static constexpr auto _s_ISIR_fd_ee_pose_topic_name  = "/fd/ee_pose"sv;
+        static constexpr auto _s_ISIR_ctrl_params_topic_name = "/ctrl/params"sv;
 
-        static constexpr auto _s_gateway_topic_name  = "ISIR_to_ONERA_Upstream"sv;
-        static constexpr auto _s_gateway_node_name   = "lexikhum_oat_upstream_gateway"sv;
+        static constexpr auto _s_gateway_topic_name          = "/gateway/ISIR_to_ONERA_Upstream"sv;
+        static constexpr auto _s_gateway_node_name           = "lexikhum_oat_upstream_gateway"sv;
 
-        static constexpr auto _s_gateway_tick_period = 100ms;
+        static constexpr auto _s_gateway_tick_period         = 100ms;
 
         // Default explicit Ctor
 
@@ -119,6 +124,10 @@ namespace Labsim::apollon::feature::ROS2
         // rclcpp::Subscription<ISIR_topic_type>::SharedPtr 
         //     m_ISIR_subscriber{ };
         //
+        rclcpp::Subscription<ISIR_fd_ee_pose_topic_type>::SharedPtr 
+            m_ISIR_fd_ee_pose_topic_subscriber{ };
+        rclcpp::Subscription<ISIR_ctrl_params_topic_type>::SharedPtr 
+            m_ISIR_ctrl_params_topic_subscriber{ };
 
         rclcpp::Publisher<gateway_topic_type>::SharedPtr 
             m_publisher{ };

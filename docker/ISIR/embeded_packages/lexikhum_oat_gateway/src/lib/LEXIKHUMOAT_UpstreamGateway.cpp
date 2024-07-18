@@ -48,6 +48,33 @@ namespace Labsim::apollon::feature::ROS2
         //
         //     }; /* ISIR_subscription_lambda */
         //
+        auto ISIR_fd_ee_pose_topic_subscription_lambda 
+            = [this](ISIR_fd_ee_pose_topic_type const & _msg) 
+                -> void
+            {
+        
+                auto buffer = this->m_upstream_buffer_ref.load();
+        
+                buffer.haptic_arm_world_position = _msg.pose.position;
+        
+                this->m_upstream_buffer_ref = buffer;
+        
+            }; /* ISIR_fd_ee_pose_topic_subscription_lambda */
+
+        auto ISIR_ctrl_params_topic_subscription_lambda 
+            = [this](ISIR_ctrl_params_topic_type const & _msg) 
+                -> void
+            {
+        
+                auto buffer = this->m_upstream_buffer_ref.load();
+        
+                buffer.gate_gradiant_force.y = _msg.data[0];
+                buffer.gate_size_forward.y   = _msg.data[1];
+                buffer.gate_size_dodge.y     = _msg.data[2];
+        
+                this->m_upstream_buffer_ref = buffer;
+        
+            }; /* ISIR_ctrl_params_topic_subscription_lambda */
 
         auto tick_lambda 
             = [this]()
@@ -89,6 +116,18 @@ namespace Labsim::apollon::feature::ROS2
         //         /* callback          */ std::move(ISIR_subscription_lambda)  
         //     );
         //
+        this->m_ISIR_fd_ee_pose_topic_subscriber 
+            = this->create_subscription<ISIR_fd_ee_pose_topic_type>(
+                /* topic_name        */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
+                /* qos_history_depth */ 10, 
+                /* callback          */ std::move(ISIR_fd_ee_pose_topic_subscription_lambda)  
+            );
+        this->m_ISIR_ctrl_params_topic_subscriber 
+            = this->create_subscription<ISIR_ctrl_params_topic_type>(
+                /* topic_name        */ self_type::_s_ISIR_ctrl_params_topic_name.data(), 
+                /* qos_history_depth */ 10, 
+                /* callback          */ std::move(ISIR_ctrl_params_topic_subscription_lambda)  
+            );
         
         this->m_timer 
             = this->create_wall_timer(
