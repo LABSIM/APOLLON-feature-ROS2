@@ -28,14 +28,14 @@ uint64 uuid
 #
 geometry_msgs/Pose entity_world_pose
 #
-# param_gate_size_forward : parametized forward size zone of the haptic gate in SI unit (meter)
+# param_gate_size_forward : parameterized forward size zone of the haptic gate in SI unit (meter)
 #
 geometry_msgs/Point param_gate_size_forward
 #
-# param_gate_size_dodge : parametized dodge size zone of the haptic gate in SI unit (meter)
+# param_gate_size_dodge : parameterized dodge size zone of the haptic gate in SI unit (meter)
 #
 geometry_msgs/Point param_gate_size_dodge
 #
-# param_gate_gradiant_force : parametized gradiant of force applied by the haptic arm (N) ?
+# param_gate_gradiant_force : parameterized gradiant of force applied by the haptic arm (N) ?
 #
 geometry_msgs/Point param_gate_gradiant_force
