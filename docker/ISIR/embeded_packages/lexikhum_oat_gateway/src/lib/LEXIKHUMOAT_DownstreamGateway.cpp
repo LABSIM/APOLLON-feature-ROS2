@@ -71,9 +71,11 @@ namespace Labsim::apollon::feature::ROS2
                 // topic.? = buffer.?;
                 // this->m_topic_publisher->publish(topic);
                 //
-                auto topic = ISIR_sim_target_topic_type();
-                topic.pose.position = buffer.entity_world_pose.position;
-                this->m_ISIR_sim_target_topic_publisher->publish(topic);
+                auto ISIR_sim_target_topic = ISIR_sim_target_topic_type();
+
+                ISIR_sim_target_topic.pose.position = buffer.entity_world_pose.position;
+                
+                this->m_ISIR_sim_target_topic_publisher->publish(ISIR_sim_target_topic);
 
             }; /* tick_lambda */
 
