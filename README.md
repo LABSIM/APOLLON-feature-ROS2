@@ -10,7 +10,7 @@ https://podman.io/
 
 ```bash
 podman build -t apollon-isir-humble:0.0.1 -f docker/ISIR/Dockerfile .
-podman run -it --rm -p 10000:10000 -p 11311:11311 apollon-isir-humble:0.0.1 /bin/bash
+podman run -it --rm -p 10000:10000 -p 11811:11811 apollon-isir-humble:0.0.1 /bin/bash
 ```
 
 > see [here](https://github.com/containers) or [there](https://opencontainers.org/) for more info about the open containers initiative.
@@ -21,7 +21,7 @@ https://www.docker.com/
 
 ```bash
 docker build -t apollon-isir-humble:0.0.1 -f docker/ISIR/Dockerfile .
-docker run -it --rm -p 10000:10000 -p 11311:11311 apollon-isir-humble:0.0.1 /bin/bash
+docker run -it --rm -p 10000:10000 -p 11811:11811 apollon-isir-humble:0.0.1 /bin/bash
 ```
 
 ## Launch ROS2 endpoint in the container 
