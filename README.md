@@ -29,5 +29,6 @@ docker run -it --rm --network=apollon-net -p 10000:10000 -p 11311:11311 -p 11811
 ## Launch ROS2 endpoint in the container 
 
 ```bash
+export ROS_DISCOVERY_SERVER="<server-ip>:11811"
 ros2 launch lexikhum_oat_gateway lexikhum_oat_gateway_container_launch.py
 ```
