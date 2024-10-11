@@ -35,6 +35,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(message_filters REQUIRED)
 find_package(lexikhum_oat_gateway_msgs REQUIRED)
 
 # target => lexikhum_oat_downstream_gateway
@@ -58,6 +59,7 @@ ament_target_dependencies(
     lexikhum_oat_downstream_gateway
     PUBLIC
         rclcpp
+        message_filters
         lexikhum_oat_gateway_msgs
 )
  
@@ -82,6 +84,7 @@ ament_target_dependencies(
     lexikhum_oat_upstream_gateway
     PUBLIC
         rclcpp
+        message_filters
         lexikhum_oat_gateway_msgs
 )
 

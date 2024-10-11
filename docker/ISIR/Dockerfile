@@ -1,4 +1,4 @@
-FROM ros:humble-ros-base
+FROM docker.io/ros:humble-ros-base
 
 # Make ROS2 Workspace Dirss
 RUN mkdir -p /home/dev_ws/src

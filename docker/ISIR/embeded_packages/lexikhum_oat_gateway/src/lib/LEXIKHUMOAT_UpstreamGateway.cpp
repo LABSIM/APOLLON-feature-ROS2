@@ -16,8 +16,9 @@
 // If not, see <http://www.gnu.org/licenses/>.
 //
 
-// Lexikhum OAT include
 #include "lexikhum_oat_gateway/LEXIKHUMOAT_UpstreamGateway.hpp"
+
+#include <functional>
 
 // avoid namespace pollution
 namespace Labsim::apollon::feature::ROS2 
@@ -28,6 +29,9 @@ namespace Labsim::apollon::feature::ROS2
     UpstreamGateway::UpstreamGateway()
         : base_type(self_type::_s_gateway_node_name.data())
     {
+
+        constexpr std::uint32_t _queue_sz{10};
+        rclcpp::QoS current_qos = rclcpp::QoS(_queue_sz);
 
         //
         // TODO :
@@ -48,91 +52,73 @@ namespace Labsim::apollon::feature::ROS2
         //
         //     }; /* ISIR_subscription_lambda */
         //
-        auto ISIR_fd_ee_pose_topic_subscription_lambda 
-            = [this](ISIR_fd_ee_pose_topic_type const & _msg) 
-                -> void
-            {
+        // auto ISIR_fd_ee_pose_topic_subscription_lambda 
+        //     = [this](ISIR_fd_ee_pose_topic_type const & _msg) 
+        //         -> void
+        //     {
         
-                auto buffer = this->m_upstream_buffer_ref.load();
+        //         auto buffer = this->m_upstream_buffer_ref.load();
         
-                buffer.haptic_arm_world_position = _msg.pose.position;
+        //         buffer.haptic_arm_world_position = _msg.pose.position;
         
-                this->m_upstream_buffer_ref = buffer;
+        //         this->m_upstream_buffer_ref = buffer;
         
-            }; /* ISIR_fd_ee_pose_topic_subscription_lambda */
+        //     }; /* ISIR_fd_ee_pose_topic_subscription_lambda */
 
-        auto ISIR_ctrl_params_topic_subscription_lambda 
-            = [this](ISIR_ctrl_params_topic_type const & _msg) 
-                -> void
+        // auto ISIR_ctrl_params_topic_subscription_lambda 
+        //     = [this](ISIR_ctrl_params_topic_type const & _msg) 
+        //         -> void
+        //     {
+        
+        //         auto buffer = this->m_upstream_buffer_ref.load();
+        
+        //         buffer.gate_gradiant_force.y = _msg.data[0];
+        //         buffer.gate_size_forward.y   = _msg.data[1];
+        //         buffer.gate_size_dodge.y     = _msg.data[2];
+        
+        //         this->m_upstream_buffer_ref = buffer;
+        
+        //     }; /* ISIR_ctrl_params_topic_subscription_lambda */
+
+        auto sync_lambda 
+            = [this](
+                ISIR_fd_ee_pose_topic_type::ConstSharedPtr const &  _fd_ee_pose_msg, 
+                ISIR_ctrl_params_topic_type::ConstSharedPtr const & _ctrl_params_msg
+            ) -> void
             {
-        
-                auto buffer = this->m_upstream_buffer_ref.load();
-        
-                buffer.gate_gradiant_force.y = _msg.data[0];
-                buffer.gate_size_forward.y   = _msg.data[1];
-                buffer.gate_size_dodge.y     = _msg.data[2];
-        
-                this->m_upstream_buffer_ref = buffer;
-        
-            }; /* ISIR_ctrl_params_topic_subscription_lambda */
+                
+                // lock data
+                std::lock_guard<std::mutex> lock{this->m_mutex};
+            
+                /* TODO ? ok
+                this->m_data.haptic_arm_world_position = _fd_ee_pose_msg->pose.position;
+                this->m_data.target_world_position     = ??
+                this->m_data.target_gradiant_force.y   = _ctrl_params_msg->data[0];
+                */
+
+
+            }; /* sync_lambda */
 
         auto tick_lambda 
             = [this]()
                 -> void
             {
 
-                // load last value
-                auto buffer = this->m_upstream_buffer_ref.load();
+                // lock data
+                std::lock_guard<std::mutex> lock{this->m_mutex};
 
                 // increment internal uuid
-                buffer.uuid = this->m_uuid++;
+                this->m_data.uuid = this->m_uuid++;
         
                 // eject into Unity
-                this->m_publisher->publish(buffer);
-
-                RCLCPP_INFO_STREAM(
-                    this->get_logger(), 
-                    "I Send: '" 
-                        << buffer.uuid 
-                        << " / "
-                            << buffer.haptic_arm_world_position.x
-                            << ","
-                            << buffer.haptic_arm_world_position.y
-                            << ","
-                            << buffer.haptic_arm_world_position.z
-                        << " / "
-                            << buffer.gate_world_position.x
-                            << ","
-                            << buffer.gate_world_position.y
-                            << ","
-                            << buffer.gate_world_position.z
-                        << " / "
-                            << buffer.gate_size_forward.x
-                            << ","
-                            << buffer.gate_size_forward.y
-                            << ","
-                            << buffer.gate_size_forward.z
-                        << " / "
-                            << buffer.gate_size_dodge.x
-                            << ","
-                            << buffer.gate_size_dodge.y
-                            << ","
-                            << buffer.gate_size_dodge.z
-                        << " / "
-                            << buffer.gate_gradiant_force.x
-                            << ","
-                            << buffer.gate_gradiant_force.y
-                            << ","
-                            << buffer.gate_gradiant_force.z
-                    << "'"
-                );
+                this->m_publisher->publish(this->m_data);
 
             }; /* tick_lambda */
 
         this->m_publisher 
             = this->create_publisher<gateway_topic_type>(
-                /* topic_name        */ self_type::_s_gateway_topic_name.data(), 
-                /* qos_history_depth */ 10
+                /* topic_name */ self_type::_s_gateway_topic_name.data(), 
+                /* QoS        */ current_qos
             );
 
         //
@@ -145,19 +131,61 @@ namespace Labsim::apollon::feature::ROS2
         //         /* qos_history_depth */ 10, 
         //         /* callback          */ std::move(ISIR_subscription_lambda)  
         //     );
+        // this->m_ISIR_fd_ee_pose_topic_subscriber 
+        //     = this->create_subscription<ISIR_fd_ee_pose_topic_type>(
+        //         /* topic_name        */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
+        //         /* qos_history_depth */ 10, 
+        //         /* callback          */ std::move(ISIR_fd_ee_pose_topic_subscription_lambda)  
+        //     );
+        // this->m_ISIR_ctrl_params_topic_subscriber 
+        //     = this->create_subscription<ISIR_ctrl_params_topic_type>(
+        //         /* topic_name        */ self_type::_s_ISIR_ctrl_params_topic_name.data(), 
+        //         /* qos_history_depth */ 10, 
+        //         /* callback          */ std::move(ISIR_ctrl_params_topic_subscription_lambda)  
+        //     );
         //
         this->m_ISIR_fd_ee_pose_topic_subscriber 
-            = this->create_subscription<ISIR_fd_ee_pose_topic_type>(
-                /* topic_name        */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
-                /* qos_history_depth */ 10, 
-                /* callback          */ std::move(ISIR_fd_ee_pose_topic_subscription_lambda)  
+            = std::make_shared< 
+                message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> 
+            >(
+                /* node ptr   */ this,
+                /* topic_name */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
+                /* QoS        */ current_qos.get_rmw_qos_profile() 
             );
-        this->m_ISIR_ctrl_params_topic_subscriber 
-            = this->create_subscription<ISIR_ctrl_params_topic_type>(
-                /* topic_name        */ self_type::_s_ISIR_ctrl_params_topic_name.data(), 
-                /* qos_history_depth */ 10, 
-                /* callback          */ std::move(ISIR_ctrl_params_topic_subscription_lambda)  
+        this->m_ISIR_ctrl_params_topic_subscriber
+            = std::make_shared<
+                message_filters::Subscriber<ISIR_ctrl_params_topic_type>
+            >(
+                /* node ptr   */ this,
+                /* topic_name */ self_type::_s_ISIR_ctrl_params_topic_name.data(), 
+                /* QoS        */ current_qos.get_rmw_qos_profile() 
             );
+
+        // the sync mechanism
+        this->m_pSync 
+            = std::make_shared<
+                message_filters::Synchronizer<
+                    message_filters::sync_policies::ApproximateTime<
+                        ISIR_fd_ee_pose_topic_type, 
+                        ISIR_ctrl_params_topic_type
+                    >
+                >
+            >(
+                message_filters::sync_policies::ApproximateTime<
+                    ISIR_fd_ee_pose_topic_type, 
+                    ISIR_ctrl_params_topic_type
+                >(_queue_sz),
+                *(this->m_ISIR_fd_ee_pose_topic_subscriber), 
+                *(this->m_ISIR_ctrl_params_topic_subscriber)
+            );
+        this->m_pSync->setAgePenalty(0.50);
+        this->m_pSync->registerCallback(
+            std::bind(
+                std::move(sync_lambda),
+                std::placeholders::_1,
+                std::placeholders::_2
+            )
+        );
         
         this->m_timer 
             = this->create_wall_timer(

@@ -35,11 +35,15 @@
 #include <cstdlib>
 #include <chrono>
 #include <memory>
-#include <atomic>
+#include <mutex>
+// #include <atomic>
 #include <string_view>
 
 // ROS2 include
 #include "rclcpp/rclcpp.hpp"
+#include "message_filters/subscriber.h"
+#include "message_filters/synchronizer.h"
+#include "message_filters/sync_policies/approximate_time.h"
 
 //
 // TODO :
@@ -68,7 +72,7 @@ namespace Labsim::apollon::feature::ROS2
     using namespace std::chrono_literals;
 
     class UpstreamGateway
-        : private NonCopyable
+        : public NonCopyable
         , public rclcpp::Node
     {
         
@@ -106,16 +110,34 @@ namespace Labsim::apollon::feature::ROS2
 
         static constexpr auto _s_gateway_tick_period         = 100ms;
 
-        // Default explicit Ctor
 
-        explicit UpstreamGateway();
+        // Coplien form - rule of 5
+
+        UpstreamGateway();
+
+        UpstreamGateway(self_type const & _rhs)
+            = delete;
+
+        UpstreamGateway(self_type && _rhs)
+            = delete;
+
+        ~UpstreamGateway() override
+            = default;
+
+        auto
+        operator=(self_type const & _rhs)
+            -> self_type & = delete;
+        
+        auto
+        operator=(self_type && _rhs)
+            -> self_type & = delete;
 
     private:
 
         // members
 
         rclcpp::TimerBase::SharedPtr 
-            m_timer{ };
+            m_timer{nullptr};
 
         //
         // TODO :
@@ -124,22 +146,40 @@ namespace Labsim::apollon::feature::ROS2
         // rclcpp::Subscription<ISIR_topic_type>::SharedPtr 
         //     m_ISIR_subscriber{ };
         //
-        rclcpp::Subscription<ISIR_fd_ee_pose_topic_type>::SharedPtr 
-            m_ISIR_fd_ee_pose_topic_subscriber{ };
-        rclcpp::Subscription<ISIR_ctrl_params_topic_type>::SharedPtr 
-            m_ISIR_ctrl_params_topic_subscriber{ };
+        // rclcpp::Subscription<ISIR_fd_ee_pose_topic_type>::SharedPtr 
+        //     m_ISIR_fd_ee_pose_topic_subscriber{ };
+        // rclcpp::Subscription<ISIR_ctrl_params_topic_type>::SharedPtr 
+        //     m_ISIR_ctrl_params_topic_subscriber{ };
+        // 
+        std::shared_ptr< message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> >
+            m_ISIR_fd_ee_pose_topic_subscriber{nullptr};
+        std::shared_ptr< message_filters::Subscriber<ISIR_ctrl_params_topic_type> >
+            m_ISIR_ctrl_params_topic_subscriber{nullptr};
+
+        std::shared_ptr<
+            message_filters::Synchronizer<
+                message_filters::sync_policies::ApproximateTime<
+                    ISIR_fd_ee_pose_topic_type, 
+                    ISIR_ctrl_params_topic_type
+                >
+            >
+        > m_pSync{nullptr};
 
         rclcpp::Publisher<gateway_topic_type>::SharedPtr 
-            m_publisher{ };
+            m_publisher{nullptr};
 
-        alignas(std::atomic_ref<gateway_topic_type>::required_alignment) 
-        gateway_topic_type 
-            m_upstream_buffer{ };
+        // alignas(std::atomic_ref<gateway_topic_type>::required_alignment) 
+        // gateway_topic_type 
+        //     m_upstream_buffer{ };
 
-        std::atomic_ref<gateway_topic_type>
-            m_upstream_buffer_ref{ this->m_upstream_buffer };
+        // std::atomic_ref<gateway_topic_type>
+        //     m_upstream_buffer_ref{ this->m_upstream_buffer };
 
-        size_t 
+        gateway_topic_type m_data{ };
+
+        mutable std::mutex m_mutex{ };
+
+        std::size_t 
             m_uuid{ 0 };
     
     }; /* class UpstreamGateway */

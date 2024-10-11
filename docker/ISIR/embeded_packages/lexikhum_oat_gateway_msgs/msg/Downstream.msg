@@ -28,14 +28,14 @@ uint64 uuid
 #
 geometry_msgs/Pose entity_world_pose
 #
-# param_gate_size_forward : parameterized forward size zone of the haptic gate in SI unit (meter)
+# current_gate_center : current target gate center in SI unit (meter) 
 #
-geometry_msgs/Point param_gate_size_forward
+geometry_msgs/Point current_gate_center
 #
-# param_gate_size_dodge : parameterized dodge size zone of the haptic gate in SI unit (meter)
+# current_gate_width : current target gate width in SI unit (meter) 
 #
-geometry_msgs/Point param_gate_size_dodge
+uint64 current_gate_width
 #
-# param_gate_gradiant_force : parameterized gradiant of force applied by the haptic arm (N) ?
+# current_phase : current experimental phase (start_cue, gate_ok, gate_nok, stop, start, restart) 
 #
-geometry_msgs/Point param_gate_gradiant_force
+string current_phase

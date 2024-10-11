@@ -29,29 +29,22 @@ namespace Labsim::apollon::feature::ROS2
         : base_type(self_type::_s_gateway_node_name.data())
     {
 
+        constexpr std::uint32_t _queue_sz{10};
+        rclcpp::QoS current_qos = rclcpp::QoS(_queue_sz);
+        
         auto subscription_lambda 
             = [this](gateway_topic_type const & _msg) 
                 -> void
             {
 
+                // lock data
+                std::lock_guard<std::mutex> lock{this->m_mutex};
+
                 // inject from Unity
-                this->m_downstream_buffer_ref = _msg;
+                this->m_data = _msg;
 
                 // keep track of current uuid 
                 this->m_uuid = _msg.uuid;
-
-                RCLCPP_INFO_STREAM(
-                    this->get_logger(), 
-                    "I Receive: '" 
-                        << _msg.uuid 
-                        << " / "
-                            << _msg.entity_world_pose.position.x
-                            << ","
-                            << _msg.entity_world_pose.position.y
-                            << ","
-                            << _msg.entity_world_pose.position.z
-                    << "'"
-                );
 
             }; /* subscription_lambda */
 
@@ -60,8 +53,11 @@ namespace Labsim::apollon::feature::ROS2
                 -> void
             {
         
-                // load last value 
-                auto buffer = this->m_downstream_buffer_ref.load();
+                // // load last value
+                // auto buffer = this->m_downstream_buffer_ref.load();
+
+                // lock data
+                std::lock_guard<std::mutex> lock{this->m_mutex};
 
                 //
                 // TODO :
@@ -73,8 +69,14 @@ namespace Labsim::apollon::feature::ROS2
                 //
                 auto ISIR_sim_target_topic = ISIR_sim_target_topic_type();
 
-                ISIR_sim_target_topic.pose.position = buffer.entity_world_pose.position;
-                
+                /*
+                ISIR_sim_target_topic.pose.position      = buffer.entity_world_pose.position;
+                ISIR_sim_target_topic.pose               = buffer.current_gate_center;
+                ISIR_sim_target_topic.current_gate_width = buffer.current_gate_width;
+                ISIR_sim_target_topic.current_phase      = buffer.current_phase;
+
+                */
+
                 this->m_ISIR_sim_target_topic_publisher->publish(ISIR_sim_target_topic);
 
             }; /* tick_lambda */
@@ -85,21 +87,21 @@ namespace Labsim::apollon::feature::ROS2
         //
         // this->m_topic_publisher   
         //     = this->create_publisher<ISIR_topic_type>(
-        //         /* topic_name        */ self_type::_s_ISIR_topic_name.data(), 
-        //         /* qos_history_depth */ 10
+        //         /* topic_name */ self_type::_s_ISIR_topic_name.data(), 
+        //         /* QoS        */ current_qos
         //     );
         //
         this->m_ISIR_sim_target_topic_publisher 
             = this->create_publisher<ISIR_sim_target_topic_type>(
-                /* topic_name        */ self_type::_s_ISIR_sim_target_topic_name.data(), 
-                /* qos_history_depth */ 10
+                /* topic_name */ self_type::_s_ISIR_sim_target_topic_name.data(), 
+                /* QoS        */ current_qos
             );
 
         this->m_subscriber 
             = this->create_subscription<gateway_topic_type>(
-                /* topic_name        */ self_type::_s_gateway_topic_name.data(), 
-                /* qos_history_depth */ 10, 
-                /* callback          */ std::move(subscription_lambda)  
+                /* topic_name */ self_type::_s_gateway_topic_name.data(), 
+                /* QoS        */ current_qos, 
+                /* callback   */ std::move(subscription_lambda)  
             );
     
         this->m_timer 

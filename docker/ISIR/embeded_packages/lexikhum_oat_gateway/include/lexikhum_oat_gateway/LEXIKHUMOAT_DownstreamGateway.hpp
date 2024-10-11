@@ -35,7 +35,8 @@
 #include <cstdlib>
 #include <chrono>
 #include <memory>
-#include <atomic>
+#include <mutex>
+// #include <atomic>
 #include <string_view>
 
 // ROS2 include
@@ -68,7 +69,7 @@ namespace Labsim::apollon::feature::ROS2
     using namespace std::chrono_literals;
 
     class DownstreamGateway 
-        : private NonCopyable
+        : public NonCopyable
         , public rclcpp::Node
     {
 
@@ -104,9 +105,26 @@ namespace Labsim::apollon::feature::ROS2
 
         static constexpr auto _s_gateway_tick_period        = 100ms;
 
-        // Default explicit Ctor
+        // Coplien form - rule of 5
+
+        DownstreamGateway();
+
+        DownstreamGateway(self_type const & _rhs)
+            = delete;
+
+        DownstreamGateway(self_type && _rhs)
+            = delete;
+
+        ~DownstreamGateway() override
+            = default;
+
+        auto
+        operator=(self_type const & _rhs)
+            -> self_type & = delete;
         
-        explicit DownstreamGateway();
+        auto
+        operator=(self_type && _rhs)
+            -> self_type & = delete;
 
     private:
 
@@ -128,15 +146,20 @@ namespace Labsim::apollon::feature::ROS2
         rclcpp::Subscription<gateway_topic_type>::SharedPtr 
             m_subscriber{ };
 
-        alignas(std::atomic_ref<gateway_topic_type>::required_alignment) 
-        gateway_topic_type 
-            m_downstream_buffer{ };
+        // alignas(std::atomic_ref<gateway_topic_type>::required_alignment) 
+        // gateway_topic_type 
+        //     m_downstream_buffer{ };
 
-        std::atomic_ref<gateway_topic_type>
-            m_downstream_buffer_ref{ this->m_downstream_buffer };
+        // std::atomic_ref<gateway_topic_type>
+        //     m_downstream_buffer_ref{ this->m_downstream_buffer };
+
+        gateway_topic_type m_data{ };
+
+        mutable std::mutex m_mutex{ };
 
         size_t 
             m_uuid{ 0 };
+
 
     }; /* class DownstreamGateway */
 

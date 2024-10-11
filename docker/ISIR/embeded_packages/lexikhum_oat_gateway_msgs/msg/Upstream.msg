@@ -24,22 +24,14 @@ uint64 uuid
 #     Datagram to discuss
 # ============================
 #
-# haptic_arm_world_position : position of the haptic arm in SI unit (meter)
+# haptic_arm_world_position : real position of the haptic arm in SI unit (meter)
 #
 geometry_msgs/Point haptic_arm_world_position
 #
-# gate_world_position : position of the current haptic center of the gate in SI unit (meter)
+# target_world_position : position of the current haptic center of the gate in SI unit (meter)
 #
-geometry_msgs/Point gate_world_position
+geometry_msgs/Point target_world_position
 #
-# gate_size_forward : forward size zone of the current haptic gate in SI unit (meter)
+# target_gradiant_force : gradiant of force applied by the haptic arm (N) ?
 #
-geometry_msgs/Point gate_size_forward
-#
-# gate_size_dodge : dodge size zone of the current haptic gate in SI unit (meter)
-#
-geometry_msgs/Point gate_size_dodge
-#
-# gate_gradiant_force : gradiant of force applied by the haptic arm (N) ?
-#
-geometry_msgs/Point gate_gradiant_force
+geometry_msgs/Point target_gradiant_force
