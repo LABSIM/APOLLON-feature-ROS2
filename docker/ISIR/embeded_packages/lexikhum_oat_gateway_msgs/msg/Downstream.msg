@@ -36,6 +36,30 @@ geometry_msgs/Point current_gate_center
 #
 uint64 current_gate_width
 #
-# current_phase : current experimental phase (start_cue, gate_ok, gate_nok, stop, start, restart) 
+# current_mode : current experimental shared intention mode
+# [
+#     Undefined,  <- default
+#     Haptic,  
+#     Auditive, 
+#     Visual, 
+#     Practice
+# ] 
+#
+string current_mode
+#
+# current_phase : current experimental phase (string)
+# (
+#     Undefined_Undefined, <- default
+#     Initialize_Session, 
+#     Initialize_Trial,  
+#     End_Trial, 
+#     End_Session, 
+#     Cue_Left,
+#     Cue_Right,
+#     StrongCue_Left,
+#     StrongCue_Right,
+#     Success_Center,
+#     Arrival_Center
+# ) 
 #
 string current_phase
