@@ -24,14 +24,14 @@ uint64 uuid
 #     Datagram to discuss
 # ============================
 #
-# haptic_arm_world_position : real position of the haptic arm in SI unit (meter)
+# effector_world_position : real position of the effector, aka. the haptic arm, in SI unit (meter)
 #
-geometry_msgs/Point haptic_arm_world_position
+geometry_msgs/Point effector_world_position
 #
-# target_world_position : position of the current haptic center of the gate in SI unit (meter)
+# force_feedback_objective_world_position : position of the computed current force feedback objective in SI unit (meter)
 #
-geometry_msgs/Point target_world_position
+geometry_msgs/Point force_feedback_objective_world_position
 #
-# target_gradiant_force : gradiant of force applied by the haptic arm (N) ?
+# force_feedback_gradiant_force : gradiant of force applied by the force feedback arm (N) ?
 #
-geometry_msgs/Point target_gradiant_force
+geometry_msgs/Point force_feedback_gradiant_force
