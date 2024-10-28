@@ -30,7 +30,7 @@ namespace Labsim::apollon::feature::ROS2
         : base_type(self_type::_s_gateway_node_name.data())
     {
 
-        constexpr std::uint32_t _queue_sz{10};
+        constexpr std::uint32_t _queue_sz{10}; // check ISIR si bug Sync ??
         rclcpp::QoS current_qos = rclcpp::QoS(_queue_sz);
 
         //
@@ -52,33 +52,51 @@ namespace Labsim::apollon::feature::ROS2
         //
         //     }; /* ISIR_subscription_lambda */
         //
-        // auto ISIR_fd_ee_pose_topic_subscription_lambda 
-        //     = [this](ISIR_fd_ee_pose_topic_type const & _msg) 
-        //         -> void
-        //     {
+        auto ISIR_fd_ee_pose_topic_subscription_lambda 
+            = [this](ISIR_fd_ee_pose_topic_type const & _msg) 
+                -> void
+            {
         
-        //         auto buffer = this->m_upstream_buffer_ref.load();
-        
-        //         buffer.haptic_arm_world_position = _msg.pose.position;
-        
-        //         this->m_upstream_buffer_ref = buffer;
-        
-        //     }; /* ISIR_fd_ee_pose_topic_subscription_lambda */
+                // lock data
+                std::lock_guard<std::mutex> lock{this->m_mutex};
+            
+                // ok ?
+                this->m_data.effector_world_position 
+                    = _msg.pose.position;
 
-        // auto ISIR_ctrl_params_topic_subscription_lambda 
-        //     = [this](ISIR_ctrl_params_topic_type const & _msg) 
-        //         -> void
-        //     {
+                // dbg
+                // RCLCPP_INFO(
+                //     this->get_logger(), 
+                //     "Upstream (ISIR_fd_ee_pose_topic_subscription_lambda)=> m_data.effector_world_position[%f,%f,%f]"
+                //     , this->m_data.effector_world_position.x
+                //     , this->m_data.effector_world_position.y
+                //     , this->m_data.effector_world_position.z
+                // );
         
-        //         auto buffer = this->m_upstream_buffer_ref.load();
+            }; /* ISIR_fd_ee_pose_topic_subscription_lambda */
+
+        auto ISIR_ctrl_params_topic_subscription_lambda 
+            = [this](ISIR_ctrl_params_topic_type const & _msg) 
+                -> void
+            {
         
-        //         buffer.gate_gradiant_force.y = _msg.data[0];
-        //         buffer.gate_size_forward.y   = _msg.data[1];
-        //         buffer.gate_size_dodge.y     = _msg.data[2];
+                // lock data
+                std::lock_guard<std::mutex> lock{this->m_mutex};
         
-        //         this->m_upstream_buffer_ref = buffer;
+                this->m_data.force_feedback_gradiant_force.x = 0.0f;
+                this->m_data.force_feedback_gradiant_force.y = _msg.data[0];
+                this->m_data.force_feedback_gradiant_force.z = 0.0f;
         
-        //     }; /* ISIR_ctrl_params_topic_subscription_lambda */
+                // dbg
+                // RCLCPP_INFO(
+                //     this->get_logger(), 
+                //     "Upstream (ISIR_ctrl_params_topic_subscription_lambda)=> m_data.force_feedback_gradiant_force[%f,%f,%f]"
+                //     , this->m_data.force_feedback_gradiant_force.x
+                //     , this->m_data.force_feedback_gradiant_force.y
+                //     , this->m_data.force_feedback_gradiant_force.z
+                // );
+
+            }; /* ISIR_ctrl_params_topic_subscription_lambda */
 
         auto sync_lambda 
             = [this](
@@ -90,12 +108,28 @@ namespace Labsim::apollon::feature::ROS2
                 // lock data
                 std::lock_guard<std::mutex> lock{this->m_mutex};
             
-                /* TODO ? ok
-                this->m_data.haptic_arm_world_position = _fd_ee_pose_msg->pose.position;
-                this->m_data.target_world_position     = ??
-                this->m_data.target_gradiant_force.y   = _ctrl_params_msg->data[0];
-                */
-
+                // ok ?
+                this->m_data.effector_world_position 
+                    = _fd_ee_pose_msg->pose.position;
+                // this->m_data.force_feedback_objective_world_position     
+                //     = ??
+                this->m_data.force_feedback_gradiant_force.y 
+                    = _ctrl_params_msg->data[0];
+                
+                // dbg
+                RCLCPP_INFO(
+                    this->get_logger(), 
+                    "Upstream (sync)=> m_data.effector_world_position[%f,%f,%f], m_data.force_feedback_objective_world_position[%f,%f,%f], m_data.force_feedback_gradiant_force[%f,%f,%f]"
+                    , this->m_data.effector_world_position.x
+                    , this->m_data.effector_world_position.y
+                    , this->m_data.effector_world_position.z
+                    , this->m_data.force_feedback_objective_world_position.x
+                    , this->m_data.force_feedback_objective_world_position.y
+                    , this->m_data.force_feedback_objective_world_position.z
+                    , this->m_data.force_feedback_gradiant_force.x
+                    , this->m_data.force_feedback_gradiant_force.y
+                    , this->m_data.force_feedback_gradiant_force.z
+                );
 
             }; /* sync_lambda */
 
@@ -113,6 +147,22 @@ namespace Labsim::apollon::feature::ROS2
                 // eject into Unity
                 this->m_publisher->publish(this->m_data);
 
+                // dbg
+                RCLCPP_INFO(
+                    this->get_logger(), 
+                    "Upstream (tick)=> m_data.uuid[%lu], m_data.effector_world_position[%f,%f,%f], m_data.force_feedback_objective_world_position[%f,%f,%f], m_data.force_feedback_gradiant_force[%f,%f,%f]"
+                    , this->m_data.uuid
+                    , this->m_data.effector_world_position.x
+                    , this->m_data.effector_world_position.y
+                    , this->m_data.effector_world_position.z
+                    , this->m_data.force_feedback_objective_world_position.x
+                    , this->m_data.force_feedback_objective_world_position.y
+                    , this->m_data.force_feedback_objective_world_position.z
+                    , this->m_data.force_feedback_gradiant_force.x
+                    , this->m_data.force_feedback_gradiant_force.y
+                    , this->m_data.force_feedback_gradiant_force.z
+                );
+
             }; /* tick_lambda */
 
         this->m_publisher 
@@ -127,24 +177,24 @@ namespace Labsim::apollon::feature::ROS2
         //            
         // this->m_ISIR_subscriber 
         //     = this->create_subscription<ISIR_topic_type>(
-        //         /* topic_name        */ self_type::_s_ISIR_topic_name.data(), 
-        //         /* qos_history_depth */ 10, 
-        //         /* callback          */ std::move(ISIR_subscription_lambda)  
+        //         /* topic_name */ self_type::_s_ISIR_topic_name.data(), 
+        //         /* qos        */ current_qos, 
+        //         /* callback   */ std::move(ISIR_subscription_lambda)  
         //     );
-        // this->m_ISIR_fd_ee_pose_topic_subscriber 
-        //     = this->create_subscription<ISIR_fd_ee_pose_topic_type>(
-        //         /* topic_name        */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
-        //         /* qos_history_depth */ 10, 
-        //         /* callback          */ std::move(ISIR_fd_ee_pose_topic_subscription_lambda)  
-        //     );
-        // this->m_ISIR_ctrl_params_topic_subscriber 
-        //     = this->create_subscription<ISIR_ctrl_params_topic_type>(
-        //         /* topic_name        */ self_type::_s_ISIR_ctrl_params_topic_name.data(), 
-        //         /* qos_history_depth */ 10, 
-        //         /* callback          */ std::move(ISIR_ctrl_params_topic_subscription_lambda)  
-        //     );
-        //
         this->m_ISIR_fd_ee_pose_topic_subscriber 
+            = this->create_subscription<ISIR_fd_ee_pose_topic_type>(
+                /* topic_name */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
+                /* qos        */ current_qos, 
+                /* callback   */ std::move(ISIR_fd_ee_pose_topic_subscription_lambda)  
+            );
+        this->m_ISIR_ctrl_params_topic_subscriber 
+            = this->create_subscription<ISIR_ctrl_params_topic_type>(
+                /* topic_name */ self_type::_s_ISIR_ctrl_params_topic_name.data(), 
+                /* qos        */ current_qos, 
+                /* callback   */ std::move(ISIR_ctrl_params_topic_subscription_lambda)  
+            );
+        
+        this->m_ISIR_fd_ee_pose_topic_sync_subscriber 
             = std::make_shared< 
                 message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> 
             >(
@@ -152,7 +202,7 @@ namespace Labsim::apollon::feature::ROS2
                 /* topic_name */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
                 /* QoS        */ current_qos.get_rmw_qos_profile() 
             );
-        this->m_ISIR_ctrl_params_topic_subscriber
+        this->m_ISIR_ctrl_params_topic_sync_subscriber
             = std::make_shared<
                 message_filters::Subscriber<ISIR_ctrl_params_topic_type>
             >(
@@ -175,8 +225,8 @@ namespace Labsim::apollon::feature::ROS2
                     ISIR_fd_ee_pose_topic_type, 
                     ISIR_ctrl_params_topic_type
                 >(_queue_sz),
-                *(this->m_ISIR_fd_ee_pose_topic_subscriber), 
-                *(this->m_ISIR_ctrl_params_topic_subscriber)
+                *(this->m_ISIR_fd_ee_pose_topic_sync_subscriber), 
+                *(this->m_ISIR_ctrl_params_topic_sync_subscriber)
             );
         this->m_pSync->setAgePenalty(0.50);
         this->m_pSync->registerCallback(

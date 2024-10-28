@@ -29,7 +29,7 @@ namespace Labsim::apollon::feature::ROS2
         : base_type(self_type::_s_gateway_node_name.data())
     {
 
-        constexpr std::uint32_t _queue_sz{10};
+        constexpr std::uint32_t _queue_sz{1}; // check ISIR ?
         rclcpp::QoS current_qos = rclcpp::QoS(_queue_sz);
         
         auto subscription_lambda 
@@ -46,16 +46,29 @@ namespace Labsim::apollon::feature::ROS2
                 // keep track of current uuid 
                 this->m_uuid = _msg.uuid;
 
+                // dbg
+                RCLCPP_INFO(
+                    this->get_logger(), 
+                    "Downstream (subscriber) => this->m_uuid[%lu], m_data.entity_world_pose.position[%f,%f,%f], m_data.current_gate_center[%f,%f,%f], m_data.current_gate_width[%lu], m_data.current_mode[%s], m_data.current_phase[%s]"
+                    , this->m_uuid 
+                    , this->m_data.entity_world_pose.position.x
+                    , this->m_data.entity_world_pose.position.y
+                    , this->m_data.entity_world_pose.position.z
+                    , this->m_data.current_gate_center.x
+                    , this->m_data.current_gate_center.y
+                    , this->m_data.current_gate_center.z
+                    , this->m_data.current_gate_width 
+                    , this->m_data.current_mode.c_str() 
+                    , this->m_data.current_phase.c_str()
+                );
+
             }; /* subscription_lambda */
 
         auto tick_lambda 
             = [this]()
                 -> void
             {
-        
-                // // load last value
-                // auto buffer = this->m_downstream_buffer_ref.load();
-
+    
                 // lock data
                 std::lock_guard<std::mutex> lock{this->m_mutex};
 
@@ -74,10 +87,15 @@ namespace Labsim::apollon::feature::ROS2
                 ISIR_sim_target_topic.pose               = buffer.current_gate_center;
                 ISIR_sim_target_topic.current_gate_width = buffer.current_gate_width;
                 ISIR_sim_target_topic.current_phase      = buffer.current_phase;
-
                 */
 
                 this->m_ISIR_sim_target_topic_publisher->publish(ISIR_sim_target_topic);
+
+                // dbg
+                RCLCPP_INFO(
+                    this->get_logger(), 
+                    "Downstream (tick) => TODO"
+                );
 
             }; /* tick_lambda */
 
