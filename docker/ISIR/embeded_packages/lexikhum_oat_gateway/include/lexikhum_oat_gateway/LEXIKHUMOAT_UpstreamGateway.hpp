@@ -152,18 +152,18 @@ namespace Labsim::apollon::feature::ROS2
             m_ISIR_ctrl_params_topic_subscriber{ };
         
         // TODO => ne fonctionne pas... ?
-        std::shared_ptr< message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> >
-            m_ISIR_fd_ee_pose_topic_sync_subscriber{nullptr};
-        std::shared_ptr< message_filters::Subscriber<ISIR_ctrl_params_topic_type> >
-            m_ISIR_ctrl_params_topic_sync_subscriber{nullptr};
-        std::shared_ptr<
-            message_filters::Synchronizer<
-                message_filters::sync_policies::ApproximateTime<
-                    ISIR_fd_ee_pose_topic_type, 
-                    ISIR_ctrl_params_topic_type
-                >
-            >
-        > m_pSync{nullptr};
+        // std::shared_ptr< message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> >
+        //     m_ISIR_fd_ee_pose_topic_sync_subscriber{nullptr};
+        // std::shared_ptr< message_filters::Subscriber<ISIR_ctrl_params_topic_type> >
+        //     m_ISIR_ctrl_params_topic_sync_subscriber{nullptr};
+        // std::shared_ptr<
+        //     message_filters::Synchronizer<
+        //         message_filters::sync_policies::ApproximateTime<
+        //             ISIR_fd_ee_pose_topic_type, 
+        //             ISIR_ctrl_params_topic_type
+        //         >
+        //     >
+        // > m_pSync{nullptr};
 
         rclcpp::Publisher<gateway_topic_type>::SharedPtr 
             m_publisher{nullptr};

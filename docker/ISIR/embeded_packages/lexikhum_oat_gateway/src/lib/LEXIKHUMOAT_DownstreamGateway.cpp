@@ -49,7 +49,7 @@ namespace Labsim::apollon::feature::ROS2
                 // dbg
                 RCLCPP_INFO(
                     this->get_logger(), 
-                    "Downstream (subscriber) => this->m_uuid[%lu], m_data.entity_world_pose.position[%f,%f,%f], m_data.current_gate_center[%f,%f,%f], m_data.current_gate_width[%lu], m_data.current_mode[%s], m_data.current_phase[%s]"
+                    "Downstream (subscriber) => \nm_uuid[%lu] \nentity_world_pose.position[%f,%f,%f] \ncurrent_gate_center[%f,%f,%f] \ncurrent_gate_width[%lu] \ncurrent_mode[%s] \ncurrent_phase[%s]"
                     , this->m_uuid 
                     , this->m_data.entity_world_pose.position.x
                     , this->m_data.entity_world_pose.position.y
@@ -92,10 +92,10 @@ namespace Labsim::apollon::feature::ROS2
                 this->m_ISIR_sim_target_topic_publisher->publish(ISIR_sim_target_topic);
 
                 // dbg
-                RCLCPP_INFO(
-                    this->get_logger(), 
-                    "Downstream (tick) => TODO"
-                );
+                // RCLCPP_INFO(
+                //     this->get_logger(), 
+                //     "Downstream (tick) => TODO"
+                // );
 
             }; /* tick_lambda */
 

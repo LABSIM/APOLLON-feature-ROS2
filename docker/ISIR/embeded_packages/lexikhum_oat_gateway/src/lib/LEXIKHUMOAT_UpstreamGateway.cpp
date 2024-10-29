@@ -98,40 +98,40 @@ namespace Labsim::apollon::feature::ROS2
 
             }; /* ISIR_ctrl_params_topic_subscription_lambda */
 
-        auto sync_lambda 
-            = [this](
-                ISIR_fd_ee_pose_topic_type::ConstSharedPtr const &  _fd_ee_pose_msg, 
-                ISIR_ctrl_params_topic_type::ConstSharedPtr const & _ctrl_params_msg
-            ) -> void
-            {
+        // auto sync_lambda 
+        //     = [this](
+        //         ISIR_fd_ee_pose_topic_type::ConstSharedPtr const &  _fd_ee_pose_msg, 
+        //         ISIR_ctrl_params_topic_type::ConstSharedPtr const & _ctrl_params_msg
+        //     ) -> void
+        //     {
                 
-                // lock data
-                std::lock_guard<std::mutex> lock{this->m_mutex};
+        //         // lock data
+        //         std::lock_guard<std::mutex> lock{this->m_mutex};
             
-                // ok ?
-                this->m_data.effector_world_position 
-                    = _fd_ee_pose_msg->pose.position;
-                // this->m_data.force_feedback_objective_world_position     
-                //     = ??
-                this->m_data.force_feedback_gradiant_force.y 
-                    = _ctrl_params_msg->data[0];
+        //         // ok ?
+        //         this->m_data.effector_world_position 
+        //             = _fd_ee_pose_msg->pose.position;
+        //         // this->m_data.force_feedback_objective_world_position     
+        //         //     = ??
+        //         this->m_data.force_feedback_gradiant_force.y 
+        //             = _ctrl_params_msg->data[0];
                 
-                // dbg
-                RCLCPP_INFO(
-                    this->get_logger(), 
-                    "Upstream (sync)=> m_data.effector_world_position[%f,%f,%f], m_data.force_feedback_objective_world_position[%f,%f,%f], m_data.force_feedback_gradiant_force[%f,%f,%f]"
-                    , this->m_data.effector_world_position.x
-                    , this->m_data.effector_world_position.y
-                    , this->m_data.effector_world_position.z
-                    , this->m_data.force_feedback_objective_world_position.x
-                    , this->m_data.force_feedback_objective_world_position.y
-                    , this->m_data.force_feedback_objective_world_position.z
-                    , this->m_data.force_feedback_gradiant_force.x
-                    , this->m_data.force_feedback_gradiant_force.y
-                    , this->m_data.force_feedback_gradiant_force.z
-                );
+        //         // dbg
+        //         RCLCPP_INFO(
+        //             this->get_logger(), 
+        //             "Upstream (sync)=> m_data.effector_world_position[%f,%f,%f], m_data.force_feedback_objective_world_position[%f,%f,%f], m_data.force_feedback_gradiant_force[%f,%f,%f]"
+        //             , this->m_data.effector_world_position.x
+        //             , this->m_data.effector_world_position.y
+        //             , this->m_data.effector_world_position.z
+        //             , this->m_data.force_feedback_objective_world_position.x
+        //             , this->m_data.force_feedback_objective_world_position.y
+        //             , this->m_data.force_feedback_objective_world_position.z
+        //             , this->m_data.force_feedback_gradiant_force.x
+        //             , this->m_data.force_feedback_gradiant_force.y
+        //             , this->m_data.force_feedback_gradiant_force.z
+        //         );
 
-            }; /* sync_lambda */
+        //     }; /* sync_lambda */
 
         auto tick_lambda 
             = [this]()
@@ -147,21 +147,21 @@ namespace Labsim::apollon::feature::ROS2
                 // eject into Unity
                 this->m_publisher->publish(this->m_data);
 
-                // dbg
-                RCLCPP_INFO(
-                    this->get_logger(), 
-                    "Upstream (tick)=> m_data.uuid[%lu], m_data.effector_world_position[%f,%f,%f], m_data.force_feedback_objective_world_position[%f,%f,%f], m_data.force_feedback_gradiant_force[%f,%f,%f]"
-                    , this->m_data.uuid
-                    , this->m_data.effector_world_position.x
-                    , this->m_data.effector_world_position.y
-                    , this->m_data.effector_world_position.z
-                    , this->m_data.force_feedback_objective_world_position.x
-                    , this->m_data.force_feedback_objective_world_position.y
-                    , this->m_data.force_feedback_objective_world_position.z
-                    , this->m_data.force_feedback_gradiant_force.x
-                    , this->m_data.force_feedback_gradiant_force.y
-                    , this->m_data.force_feedback_gradiant_force.z
-                );
+                // // dbg
+                // RCLCPP_INFO(
+                //     this->get_logger(), 
+                //     "Upstream (tick)=> \nuuid[%lu] \neffector_world_position[%f,%f,%f] \nforce_feedback_objective_world_position[%f,%f,%f] \nforce_feedback_gradiant_force[%f,%f,%f]"
+                //     , this->m_data.uuid
+                //     , this->m_data.effector_world_position.x
+                //     , this->m_data.effector_world_position.y
+                //     , this->m_data.effector_world_position.z
+                //     , this->m_data.force_feedback_objective_world_position.x
+                //     , this->m_data.force_feedback_objective_world_position.y
+                //     , this->m_data.force_feedback_objective_world_position.z
+                //     , this->m_data.force_feedback_gradiant_force.x
+                //     , this->m_data.force_feedback_gradiant_force.y
+                //     , this->m_data.force_feedback_gradiant_force.z
+                // );
 
             }; /* tick_lambda */
 
@@ -194,48 +194,48 @@ namespace Labsim::apollon::feature::ROS2
                 /* callback   */ std::move(ISIR_ctrl_params_topic_subscription_lambda)  
             );
         
-        this->m_ISIR_fd_ee_pose_topic_sync_subscriber 
-            = std::make_shared< 
-                message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> 
-            >(
-                /* node ptr   */ this,
-                /* topic_name */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
-                /* QoS        */ current_qos.get_rmw_qos_profile() 
-            );
-        this->m_ISIR_ctrl_params_topic_sync_subscriber
-            = std::make_shared<
-                message_filters::Subscriber<ISIR_ctrl_params_topic_type>
-            >(
-                /* node ptr   */ this,
-                /* topic_name */ self_type::_s_ISIR_ctrl_params_topic_name.data(), 
-                /* QoS        */ current_qos.get_rmw_qos_profile() 
-            );
+        // this->m_ISIR_fd_ee_pose_topic_sync_subscriber 
+        //     = std::make_shared< 
+        //         message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> 
+        //     >(
+        //         /* node ptr   */ this,
+        //         /* topic_name */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
+        //         /* QoS        */ current_qos.get_rmw_qos_profile() 
+        //     );
+        // this->m_ISIR_ctrl_params_topic_sync_subscriber
+        //     = std::make_shared<
+        //         message_filters::Subscriber<ISIR_ctrl_params_topic_type>
+        //     >(
+        //         /* node ptr   */ this,
+        //         /* topic_name */ self_type::_s_ISIR_ctrl_params_topic_name.data(), 
+        //         /* QoS        */ current_qos.get_rmw_qos_profile() 
+        //     );
 
-        // the sync mechanism
-        this->m_pSync 
-            = std::make_shared<
-                message_filters::Synchronizer<
-                    message_filters::sync_policies::ApproximateTime<
-                        ISIR_fd_ee_pose_topic_type, 
-                        ISIR_ctrl_params_topic_type
-                    >
-                >
-            >(
-                message_filters::sync_policies::ApproximateTime<
-                    ISIR_fd_ee_pose_topic_type, 
-                    ISIR_ctrl_params_topic_type
-                >(_queue_sz),
-                *(this->m_ISIR_fd_ee_pose_topic_sync_subscriber), 
-                *(this->m_ISIR_ctrl_params_topic_sync_subscriber)
-            );
-        this->m_pSync->setAgePenalty(0.50);
-        this->m_pSync->registerCallback(
-            std::bind(
-                std::move(sync_lambda),
-                std::placeholders::_1,
-                std::placeholders::_2
-            )
-        );
+        // // the sync mechanism
+        // this->m_pSync 
+        //     = std::make_shared<
+        //         message_filters::Synchronizer<
+        //             message_filters::sync_policies::ApproximateTime<
+        //                 ISIR_fd_ee_pose_topic_type, 
+        //                 ISIR_ctrl_params_topic_type
+        //             >
+        //         >
+        //     >(
+        //         message_filters::sync_policies::ApproximateTime<
+        //             ISIR_fd_ee_pose_topic_type, 
+        //             ISIR_ctrl_params_topic_type
+        //         >(_queue_sz),
+        //         *(this->m_ISIR_fd_ee_pose_topic_sync_subscriber), 
+        //         *(this->m_ISIR_ctrl_params_topic_sync_subscriber)
+        //     );
+        // this->m_pSync->setAgePenalty(0.50);
+        // this->m_pSync->registerCallback(
+        //     std::bind(
+        //         std::move(sync_lambda),
+        //         std::placeholders::_1,
+        //         std::placeholders::_2
+        //     )
+        // );
         
         this->m_timer 
             = this->create_wall_timer(
