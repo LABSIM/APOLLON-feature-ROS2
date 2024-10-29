@@ -30,8 +30,8 @@ docker run -it --rm --network=apollon-net -p 10000:10000 -p 11311:11311 -p 11811
 
 usually :
 
-- <server-ip>   = 0.0.0.0 
-- <server-port> = 11811
+- [server-ip]   = 0.0.0.0 
+- [server-port] = 11811
 
 ```bash
 export ROS_DISCOVERY_SERVER="<server-ip>:<server-port>"
