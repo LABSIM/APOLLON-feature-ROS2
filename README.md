@@ -4,7 +4,7 @@ inspired from https://github.com/Unity-Technologies/Unity-Robotics-Hub/blob/v0.7
 
 ## Architecture
 
-![global arch](schema - LEXIKHUM global.png)
+![global arch](./schema_global_arch.png)
 
 ## Build the container 
 
