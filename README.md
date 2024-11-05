@@ -28,10 +28,12 @@ docker run -it --rm --network=apollon-net -p 10000:10000 -p 11311:11311 -p 11811
 
 ## Launch ROS2 endpoint in the container 
 
-usually :
+usually, the container is deployed on the ISIR "ROS2" Host, so :
 
 - [server-ip]   = 0.0.0.0 
 - [server-port] = 11811
+
+> for more informations abour ROS2 & the FastDDS discovery service, see [here](https://fast-dds.docs.eprosima.com/en/latest/fastdds/ros2/discovery_server/ros2_discovery_server.html) or [there](https://fast-dds.docs.eprosima.com/en/latest/fastdds/discovery/discovery_server.html)
 
 ```bash
 export ROS_DISCOVERY_SERVER="<server-ip>:<server-port>"
