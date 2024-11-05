@@ -2,6 +2,10 @@
 
 inspired from https://github.com/Unity-Technologies/Unity-Robotics-Hub/blob/v0.7.0/tutorials/ros_unity_integration/README.md
 
+## Architecture
+
+![global arch](./schema - LEXIKHUM global.png)
+
 ## Build the container 
 
 ### Podman :=) 
