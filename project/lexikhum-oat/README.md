@@ -1,6 +1,6 @@
-# LEXIKHUM-OAT Gateway
+# LEXIKHUM-OAT Gateway project
 
-LEXIKHUM Obstacle Avoidance Task gateway project. 
+***LEX**ique d'**I**nteraction **K**inesthesique **HU**main-**M**achine - **O**bstacle **A**voidance **T**ask*
 
 ## Build
 
