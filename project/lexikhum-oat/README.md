@@ -9,7 +9,7 @@
 https://podman.io/ 
 
 ```bash
-podman build -t apollon-isir-humble:0.0.1 -f container/docker/Dockerfile .
+podman build -t apollon-isir-humble:0.0.1 -f container/oci/Containerfile .
 podman run -it --rm -p 10000:10000 -p 11311:11311 -p 11811:11811 apollon-isir-humble:0.0.1 /bin/bash
 ```
 
@@ -20,7 +20,7 @@ podman run -it --rm -p 10000:10000 -p 11311:11311 -p 11811:11811 apollon-isir-hu
 https://www.docker.com/
 
 ```bash
-docker build -t apollon-isir-humble:0.0.1 -f container/oci/Containerfile .
+docker build -t apollon-isir-humble:0.0.1 -f container/docker/Dockerfile .
 docker network create -d host apollon-net
 docker run -it --rm --network=apollon-net -p 10000:10000 -p 11311:11311 -p 11811:11811 apollon-isir-humble:0.0.1 /bin/bash
 ```
