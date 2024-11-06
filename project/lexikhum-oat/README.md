@@ -1,4 +1,4 @@
-# LEXIKHUM-OAT Gateway project
+# LEXIKHUM-OAT
 
 ***LEX**ique d'**I**nteraction **K**inesthesique **HU**main-**M**achine - **O**bstacle **A**voidance **T**ask*
 
