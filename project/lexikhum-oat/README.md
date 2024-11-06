@@ -4,7 +4,17 @@
 
 ## Build
 
-### Podman engine :=) 
+### Docker engine
+    
+https://www.docker.com/
+
+```bash
+docker build -t apollon-isir-humble:0.0.1 -f container/docker/Dockerfile .
+docker network create -d host apollon-net
+docker run -it --rm --network=apollon-net -p 10000:10000 -p 11311:11311 -p 11811:11811 apollon-isir-humble:0.0.1 /bin/bash
+```
+
+### Podman engine
 
 https://podman.io/ 
 
@@ -14,16 +24,6 @@ podman run -it --rm -p 10000:10000 -p 11311:11311 -p 11811:11811 apollon-isir-hu
 ```
 
 > see [here](https://github.com/containers) or [there](https://opencontainers.org/) for more info about the open containers initiative.
-
-### Docker engine :=(
-    
-https://www.docker.com/
-
-```bash
-docker build -t apollon-isir-humble:0.0.1 -f container/docker/Dockerfile .
-docker network create -d host apollon-net
-docker run -it --rm --network=apollon-net -p 10000:10000 -p 11311:11311 -p 11811:11811 apollon-isir-humble:0.0.1 /bin/bash
-```
 
 ## Launch
 
