@@ -22,13 +22,13 @@ FROM docker.io/ros:humble-ros-base
 RUN mkdir -p /home/dev_ws/src
 
 # Copy ROS2 packages into workspace
-COPY ./docker/ISIR/embeded_packages /home/dev_ws/src
+COPY ./embeded_packages /home/dev_ws/src
 
 # Check out ROS-TCP-Endpoint, ROS2 version
 RUN git clone https://github.com/Unity-Technologies/ROS-TCP-Endpoint /home/dev_ws/src/ros_tcp_endpoint -b ROS2v0.7.0
 
 # Reference script with commands to source workspace
-COPY ./docker/ISIR/source_ros.sh /home/dev_ws/source_ros.sh
+COPY ./container/source_ros.sh /home/dev_ws/source_ros.sh
 
 # Change to workspace on sign in
 RUN echo "cd home/dev_ws" >> ~/.bashrc
