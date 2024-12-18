@@ -3,11 +3,11 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     return LaunchDescription([
-        Node(
-            package='lexikhum_oat_gateway',
-            executable='lexikhum_oat_downstream_gateway',
-            name='downstream'
-        ),
+        # Node(
+        #     package='lexikhum_oat_gateway',
+        #     executable='lexikhum_oat_downstream_gateway',
+        #     name='downstream'
+        # ),
         Node(
             package='lexikhum_oat_gateway',
             executable='lexikhum_oat_upstream_gateway',

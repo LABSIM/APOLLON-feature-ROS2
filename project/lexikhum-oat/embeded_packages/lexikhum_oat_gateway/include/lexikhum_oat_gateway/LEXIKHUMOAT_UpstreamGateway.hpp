@@ -108,7 +108,7 @@ namespace Labsim::apollon::feature::ROS2
         static constexpr auto _s_gateway_topic_name          = "/gateway/ISIR_to_ONERA_Upstream"sv;
         static constexpr auto _s_gateway_node_name           = "lexikhum_oat_upstream_gateway"sv;
 
-        static constexpr auto _s_gateway_tick_period         = 100ms;
+        static constexpr auto _s_gateway_tick_period         = 10ms;
 
 
         // Coplien form - rule of 5
