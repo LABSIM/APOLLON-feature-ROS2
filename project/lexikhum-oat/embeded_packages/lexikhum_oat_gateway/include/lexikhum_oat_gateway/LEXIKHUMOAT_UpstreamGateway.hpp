@@ -89,7 +89,7 @@ namespace Labsim::apollon::feature::ROS2
         //
         //  using ISIR_topic_type = msg::ISIRTopicT;
         //
-        using ISIR_fd_ee_pose_topic_type  = geometry_msgs::msg::PoseStamped;
+        using ISIR_sim_pos_topic_type  = geometry_msgs::msg::PoseStamped;
         using ISIR_ctrl_params_topic_type = std_msgs::msg::Float64MultiArray;
 
         using gateway_topic_type          = lexikhum_oat_gateway_msgs::msg::Upstream;      
@@ -102,7 +102,7 @@ namespace Labsim::apollon::feature::ROS2
         //
         // static constexpr auto _s_ISIR_topic_name  = "??"sv;
         //
-        static constexpr auto _s_ISIR_fd_ee_pose_topic_name  = "/fd/ee_pose"sv;
+        static constexpr auto _s_ISIR_sim_pos_topic_name  = "/omega/sim_position"sv;
         static constexpr auto _s_ISIR_ctrl_params_topic_name = "/ctrl/params"sv;
 
         static constexpr auto _s_gateway_topic_name          = "/gateway/ISIR_to_ONERA_Upstream"sv;
@@ -146,20 +146,20 @@ namespace Labsim::apollon::feature::ROS2
         // rclcpp::Subscription<ISIR_topic_type>::SharedPtr 
         //     m_ISIR_subscriber{ };
         //
-        rclcpp::Subscription<ISIR_fd_ee_pose_topic_type>::SharedPtr 
-            m_ISIR_fd_ee_pose_topic_subscriber{ };
+        rclcpp::Subscription<ISIR_sim_pos_topic_type>::SharedPtr 
+            m_ISIR_sim_pos_topic_subscriber{ };
         rclcpp::Subscription<ISIR_ctrl_params_topic_type>::SharedPtr 
             m_ISIR_ctrl_params_topic_subscriber{ };
         
         // TODO => ne fonctionne pas... ?
-        // std::shared_ptr< message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> >
-        //     m_ISIR_fd_ee_pose_topic_sync_subscriber{nullptr};
+        // std::shared_ptr< message_filters::Subscriber<ISIR_sim_pos_topic_type> >
+        //     m_ISIR_sim_pos_topic_sync_subscriber{nullptr};
         // std::shared_ptr< message_filters::Subscriber<ISIR_ctrl_params_topic_type> >
         //     m_ISIR_ctrl_params_topic_sync_subscriber{nullptr};
         // std::shared_ptr<
         //     message_filters::Synchronizer<
         //         message_filters::sync_policies::ApproximateTime<
-        //             ISIR_fd_ee_pose_topic_type, 
+        //             ISIR_sim_pos_topic_type, 
         //             ISIR_ctrl_params_topic_type
         //         >
         //     >
