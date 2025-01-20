@@ -52,8 +52,8 @@ namespace Labsim::apollon::feature::ROS2
         //
         //     }; /* ISIR_subscription_lambda */
         //
-        auto ISIR_fd_ee_pose_topic_subscription_lambda 
-            = [this](ISIR_fd_ee_pose_topic_type const & _msg) 
+        auto ISIR_sim_pos_topic_subscription_lambda 
+            = [this](ISIR_sim_pos_topic_type const & _msg) 
                 -> void
             {
         
@@ -67,13 +67,13 @@ namespace Labsim::apollon::feature::ROS2
                 // dbg
                 // RCLCPP_INFO(
                 //     this->get_logger(), 
-                //     "Upstream (ISIR_fd_ee_pose_topic_subscription_lambda)=> m_data.effector_world_position[%f,%f,%f]"
+                //     "Upstream (ISIR_sim_pos_topic_subscription_lambda)=> m_data.effector_world_position[%f,%f,%f]"
                 //     , this->m_data.effector_world_position.x
                 //     , this->m_data.effector_world_position.y
                 //     , this->m_data.effector_world_position.z
                 // );
         
-            }; /* ISIR_fd_ee_pose_topic_subscription_lambda */
+            }; /* ISIR_sim_pos_topic_subscription_lambda */
 
         auto ISIR_ctrl_params_topic_subscription_lambda 
             = [this](ISIR_ctrl_params_topic_type const & _msg) 
@@ -100,7 +100,7 @@ namespace Labsim::apollon::feature::ROS2
 
         // auto sync_lambda 
         //     = [this](
-        //         ISIR_fd_ee_pose_topic_type::ConstSharedPtr const &  _fd_ee_pose_msg, 
+        //         ISIR_sim_pos_topic_type::ConstSharedPtr const &  _fd_ee_pose_msg, 
         //         ISIR_ctrl_params_topic_type::ConstSharedPtr const & _ctrl_params_msg
         //     ) -> void
         //     {
@@ -181,11 +181,11 @@ namespace Labsim::apollon::feature::ROS2
         //         /* qos        */ current_qos, 
         //         /* callback   */ std::move(ISIR_subscription_lambda)  
         //     );
-        this->m_ISIR_fd_ee_pose_topic_subscriber 
-            = this->create_subscription<ISIR_fd_ee_pose_topic_type>(
-                /* topic_name */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
+        this->m_ISIR_sim_pos_topic_subscriber 
+            = this->create_subscription<ISIR_sim_pos_topic_type>(
+                /* topic_name */ self_type::_s_ISIR_sim_pos_topic_name.data(), 
                 /* qos        */ current_qos, 
-                /* callback   */ std::move(ISIR_fd_ee_pose_topic_subscription_lambda)  
+                /* callback   */ std::move(ISIR_sim_pos_topic_subscription_lambda)  
             );
         this->m_ISIR_ctrl_params_topic_subscriber 
             = this->create_subscription<ISIR_ctrl_params_topic_type>(
@@ -194,12 +194,12 @@ namespace Labsim::apollon::feature::ROS2
                 /* callback   */ std::move(ISIR_ctrl_params_topic_subscription_lambda)  
             );
         
-        // this->m_ISIR_fd_ee_pose_topic_sync_subscriber 
+        // this->m_ISIR_sim_pos_topic_sync_subscriber 
         //     = std::make_shared< 
-        //         message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> 
+        //         message_filters::Subscriber<ISIR_sim_pos_topic_type> 
         //     >(
         //         /* node ptr   */ this,
-        //         /* topic_name */ self_type::_s_ISIR_fd_ee_pose_topic_name.data(), 
+        //         /* topic_name */ self_type::_s_ISIR_sim_pos_topic_name.data(), 
         //         /* QoS        */ current_qos.get_rmw_qos_profile() 
         //     );
         // this->m_ISIR_ctrl_params_topic_sync_subscriber
@@ -216,16 +216,16 @@ namespace Labsim::apollon::feature::ROS2
         //     = std::make_shared<
         //         message_filters::Synchronizer<
         //             message_filters::sync_policies::ApproximateTime<
-        //                 ISIR_fd_ee_pose_topic_type, 
+        //                 ISIR_sim_pos_topic_type, 
         //                 ISIR_ctrl_params_topic_type
         //             >
         //         >
         //     >(
         //         message_filters::sync_policies::ApproximateTime<
-        //             ISIR_fd_ee_pose_topic_type, 
+        //             ISIR_sim_pos_topic_type, 
         //             ISIR_ctrl_params_topic_type
         //         >(_queue_sz),
-        //         *(this->m_ISIR_fd_ee_pose_topic_sync_subscriber), 
+        //         *(this->m_ISIR_sim_pos_topic_sync_subscriber), 
         //         *(this->m_ISIR_ctrl_params_topic_sync_subscriber)
         //     );
         // this->m_pSync->setAgePenalty(0.50);
