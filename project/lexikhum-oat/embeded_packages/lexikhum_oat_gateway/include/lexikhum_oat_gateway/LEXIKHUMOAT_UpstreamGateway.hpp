@@ -102,7 +102,7 @@ namespace Labsim::apollon::feature::ROS2
         //
         // static constexpr auto _s_ISIR_topic_name  = "??"sv;
         //
-        static constexpr auto _s_ISIR_sim_pos_topic_name  = "/omega/sim_position"sv;
+        static constexpr auto _s_ISIR_sim_pos_topic_name     = "/omega/sim_position"sv;
         static constexpr auto _s_ISIR_ctrl_params_topic_name = "/ctrl/params"sv;
 
         static constexpr auto _s_gateway_topic_name          = "/gateway/ISIR_to_ONERA_Upstream"sv;
