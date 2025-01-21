@@ -147,13 +147,13 @@ namespace Labsim::apollon::feature::ROS2
         //     m_ISIR_subscriber{ };
         //
         rclcpp::Subscription<ISIR_fd_ee_pose_topic_type>::SharedPtr 
-            m_ISIR_fd_ee_pos_topic_subscriber{ };
+            m_ISIR_fd_ee_pose_topic_subscriber{ };
         rclcpp::Subscription<ISIR_ctrl_params_topic_type>::SharedPtr 
             m_ISIR_ctrl_params_topic_subscriber{ };
         
         // TODO => ne fonctionne pas... ?
         // std::shared_ptr< message_filters::Subscriber<ISIR_fd_ee_pose_topic_type> >
-        //     m_ISIR_fd_ee_pos_topic_sync_subscriber{nullptr};
+        //     m_ISIR_fd_ee_pose_topic_sync_subscriber{nullptr};
         // std::shared_ptr< message_filters::Subscriber<ISIR_ctrl_params_topic_type> >
         //     m_ISIR_ctrl_params_topic_sync_subscriber{nullptr};
         // std::shared_ptr<
