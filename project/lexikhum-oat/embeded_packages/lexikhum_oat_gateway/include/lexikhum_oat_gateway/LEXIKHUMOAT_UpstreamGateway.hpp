@@ -89,10 +89,10 @@ namespace Labsim::apollon::feature::ROS2
         //
         //  using ISIR_topic_type = msg::ISIRTopicT;
         //
-        using ISIR_sim_pos_topic_type     = geometry_msgs::msg::PoseStamped;
+        using ISIR_sim_pos_topic_type  = geometry_msgs::msg::PoseStamped;
         using ISIR_ctrl_params_topic_type = std_msgs::msg::Float64MultiArray;
 
-        using gateway_topic_type           = lexikhum_oat_gateway_msgs::msg::Upstream;      
+        using gateway_topic_type          = lexikhum_oat_gateway_msgs::msg::Upstream;      
         
         // constants 
 
