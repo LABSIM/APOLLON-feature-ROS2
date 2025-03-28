@@ -147,21 +147,21 @@ namespace Labsim::apollon::feature::ROS2
                 // eject into Unity
                 this->m_publisher->publish(this->m_data);
 
-                // dbg
-                RCLCPP_INFO(
-                    this->get_logger(), 
-                    "Upstream (tick)=> \nuuid[%lu] \neffector_world_position[%f,%f,%f] \nforce_feedback_objective_world_position[%f,%f,%f] \nforce_feedback_gradiant_force[%f,%f,%f]"
-                    , this->m_data.uuid
-                    , this->m_data.effector_world_position.x
-                    , this->m_data.effector_world_position.y
-                    , this->m_data.effector_world_position.z
-                    , this->m_data.force_feedback_objective_world_position.x
-                    , this->m_data.force_feedback_objective_world_position.y
-                    , this->m_data.force_feedback_objective_world_position.z
-                    , this->m_data.force_feedback_gradiant_force.x
-                    , this->m_data.force_feedback_gradiant_force.y
-                    , this->m_data.force_feedback_gradiant_force.z
-                );
+                // // dbg
+                // RCLCPP_INFO(
+                //     this->get_logger(), 
+                //     "Upstream (tick)=> \nuuid[%lu] \neffector_world_position[%f,%f,%f] \nforce_feedback_objective_world_position[%f,%f,%f] \nforce_feedback_gradiant_force[%f,%f,%f]"
+                //     , this->m_data.uuid
+                //     , this->m_data.effector_world_position.x
+                //     , this->m_data.effector_world_position.y
+                //     , this->m_data.effector_world_position.z
+                //     , this->m_data.force_feedback_objective_world_position.x
+                //     , this->m_data.force_feedback_objective_world_position.y
+                //     , this->m_data.force_feedback_objective_world_position.z
+                //     , this->m_data.force_feedback_gradiant_force.x
+                //     , this->m_data.force_feedback_gradiant_force.y
+                //     , this->m_data.force_feedback_gradiant_force.z
+                // );
 
             }; /* tick_lambda */
 

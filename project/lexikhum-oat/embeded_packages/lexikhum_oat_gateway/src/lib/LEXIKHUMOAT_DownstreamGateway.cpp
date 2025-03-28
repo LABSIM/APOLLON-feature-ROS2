@@ -46,21 +46,21 @@ namespace Labsim::apollon::feature::ROS2
                 // keep track of current uuid 
                 this->m_uuid = _msg.uuid;
 
-                // dbg
-                RCLCPP_INFO(
-                    this->get_logger(), 
-                    "Downstream (subscriber) => \nm_uuid[%lu] \nentity_world_pose.position[%f,%f,%f] \ncurrent_gate_center[%f,%f,%f] \ncurrent_gate_width[%lu] \ncurrent_mode[%s] \ncurrent_phase[%s]"
-                    , this->m_uuid 
-                    , this->m_data.entity_world_pose.position.x
-                    , this->m_data.entity_world_pose.position.y
-                    , this->m_data.entity_world_pose.position.z
-                    , this->m_data.current_gate_center.x
-                    , this->m_data.current_gate_center.y
-                    , this->m_data.current_gate_center.z
-                    , this->m_data.current_gate_width 
-                    , this->m_data.current_mode.c_str() 
-                    , this->m_data.current_phase.c_str()
-                );
+                // // dbg
+                // RCLCPP_INFO(
+                //     this->get_logger(), 
+                //     "Downstream (subscriber) => \nm_uuid[%lu] \nentity_world_pose.position[%f,%f,%f] \ncurrent_gate_center[%f,%f,%f] \ncurrent_gate_width[%lu] \ncurrent_mode[%s] \ncurrent_phase[%s]"
+                //     , this->m_uuid 
+                //     , this->m_data.entity_world_pose.position.x
+                //     , this->m_data.entity_world_pose.position.y
+                //     , this->m_data.entity_world_pose.position.z
+                //     , this->m_data.current_gate_center.x
+                //     , this->m_data.current_gate_center.y
+                //     , this->m_data.current_gate_center.z
+                //     , this->m_data.current_gate_width 
+                //     , this->m_data.current_mode.c_str() 
+                //     , this->m_data.current_phase.c_str()
+                // );
 
             }; /* subscription_lambda */
 
